@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../Snowflake_Logo.svg" alt="Snowflake Logo" width="200">
+</p>
+
 # Mahoney Group Intelligence Agent - Test Questions
 
 These questions demonstrate the intelligence agent's ability to analyze Mahoney Group's multi-line insurance operations, including commercial insurance, employee benefits, claims management, and risk management across multiple industries.

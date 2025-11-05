@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../Snowflake_Logo.svg" alt="Snowflake Logo" width="200">
+</p>
+
 # Mahoney Group Intelligence Agent - Setup Guide
 
 This guide walks through configuring a Snowflake Intelligence agent for Mahoney Group's multi-line insurance and employee benefits intelligence solution.

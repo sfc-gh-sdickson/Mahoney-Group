@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./Snowflake_Logo.svg" alt="Snowflake Logo" width="200">
+</p>
+
 # Mahoney Group Intelligence Agent Solution
 
 ## About Mahoney Group

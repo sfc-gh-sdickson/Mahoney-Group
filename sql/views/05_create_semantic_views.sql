@@ -341,16 +341,11 @@ CREATE OR REPLACE SEMANTIC VIEW SV_EMPLOYEE_BENEFITS_INTELLIGENCE
     agents AS RAW.INSURANCE_AGENTS
       PRIMARY KEY (agent_id)
       WITH SYNONYMS ('benefits advisors', 'benefits consultants', 'benefits brokers')
-      COMMENT = 'Agents managing employee benefits',
-    products AS RAW.INSURANCE_PRODUCTS
-      PRIMARY KEY (product_id)
-      WITH SYNONYMS ('benefit products', 'benefits offerings', 'group coverage products')
-      COMMENT = 'Employee benefit products'
+      COMMENT = 'Agents managing employee benefits'
   )
   RELATIONSHIPS (
     benefit_plans(client_id) REFERENCES clients(client_id),
-    benefit_plans(agent_id) REFERENCES agents(agent_id),
-    products(product_id) REFERENCES products(product_id)
+    benefit_plans(agent_id) REFERENCES agents(agent_id)
   )
   DIMENSIONS (
     clients.client_name AS client_name
@@ -391,16 +386,7 @@ CREATE OR REPLACE SEMANTIC VIEW SV_EMPLOYEE_BENEFITS_INTELLIGENCE
       COMMENT = 'Agent specialization',
     agents.office_location AS office_location
       WITH SYNONYMS ('advisor office', 'consultant location')
-      COMMENT = 'Agent office location',
-    products.product_name AS product_name
-      WITH SYNONYMS ('benefits product name', 'coverage product name')
-      COMMENT = 'Name of the benefits product',
-    products.product_category AS product_category
-      WITH SYNONYMS ('benefits category', 'product type')
-      COMMENT = 'Product category',
-    products.product_line AS product_line
-      WITH SYNONYMS ('benefits line', 'product line')
-      COMMENT = 'Product line'
+      COMMENT = 'Agent office location'
   )
   METRICS (
     clients.total_clients AS COUNT(DISTINCT client_id)
@@ -432,10 +418,7 @@ CREATE OR REPLACE SEMANTIC VIEW SV_EMPLOYEE_BENEFITS_INTELLIGENCE
       COMMENT = 'Average annual premium per plan',
     agents.total_agents AS COUNT(DISTINCT agent_id)
       WITH SYNONYMS ('advisor count', 'benefits consultant count')
-      COMMENT = 'Total number of benefits agents',
-    products.total_products AS COUNT(DISTINCT product_id)
-      WITH SYNONYMS ('product count view3', 'benefits product count')
-      COMMENT = 'Total number of benefits products'
+      COMMENT = 'Total number of benefits agents'
   )
   COMMENT = 'Mahoney Group Employee Benefits Intelligence - comprehensive view of benefit plans, clients, agents, and coverage';
 
