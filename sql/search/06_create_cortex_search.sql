@@ -127,7 +127,7 @@ LIMIT 30000;
 -- ============================================================================
 INSERT INTO POLICY_DOCUMENTS VALUES
 ('DOC001', NULL, NULL, 'Commercial General Liability Policy Wording - Mahoney Group Standard Form',
-$$COMMERCIAL GENERAL LIABILITY POLICY
+$POLICY1$COMMERCIAL GENERAL LIABILITY POLICY
 MAHONEY GROUP INSURANCE SERVICES
 
 POLICY DECLARATIONS AND COVERAGE FORM
@@ -221,11 +221,11 @@ SECTION IV - COMMERCIAL GENERAL LIABILITY CONDITIONS
 SECTION V - DEFINITIONS
 Key definitions include "bodily injury", "property damage", "occurrence", "personal and advertising injury", "products-completed operations hazard", "suit", "coverage territory", and others.
 
-This policy form must be attached to Declarations showing policy limits, premiums, deductibles, and specific endorsements. Coverage is subject to all policy terms, conditions, and exclusions.$$,
+This policy form must be attached to Declarations showing policy limits, premiums, deductibles, and specific endorsements. Coverage is subject to all policy terms, conditions, and exclusions.$POLICY1$,
 'POLICY_FORM', 'LIABILITY', 'General Liability', NULL, NULL, NULL, 'commercial general liability, CGL, occurrence basis, bodily injury, property damage', CURRENT_TIMESTAMP()),
 
 ('DOC002', NULL, NULL, 'Workers Compensation Policy Overview - Arizona Coverage',
-$$WORKERS COMPENSATION AND EMPLOYERS LIABILITY INSURANCE POLICY
+$POLICY2$WORKERS COMPENSATION AND EMPLOYERS LIABILITY INSURANCE POLICY
 MAHONEY GROUP INSURANCE SERVICES - ARIZONA COVERAGE
 
 GENERAL SECTION
@@ -306,11 +306,11 @@ You must:
 PART FIVE: PREMIUM
 Premium is based on your estimated payroll for the policy period, subject to audit after the policy expires. Different job classifications have different premium rates based on the risk of injury. Final premium is determined by actual payroll and job classifications during the policy year.
 
-This is a summary document. The actual policy contains detailed terms, conditions, exclusions, and definitions.$$,
+This is a summary document. The actual policy contains detailed terms, conditions, exclusions, and definitions.$POLICY2$,
 'POLICY_FORM', 'WORKERS_COMP', 'Workers Compensation', 'AZ', NULL, NULL, 'workers compensation, Arizona, employers liability, workplace injury', CURRENT_TIMESTAMP()),
 
 ('DOC003', NULL, NULL, 'Cyber Insurance Policy - Data Breach and Network Security Coverage',
-$$CYBER LIABILITY AND DATA BREACH INSURANCE POLICY
+$POLICY3$CYBER LIABILITY AND DATA BREACH INSURANCE POLICY
 MAHONEY GROUP INSURANCE SERVICES
 
 TECHNOLOGY ERRORS & OMISSIONS AND CYBER LIABILITY COVERAGE FORM
@@ -430,7 +430,7 @@ LIMITS OF INSURANCE
 - Retention/Deductible applies to each claim
 - Claim Expenses may be within or outside limits depending on policy form
 
-This policy provides essential cyber insurance coverage for technology risks. Coverage is subject to all policy terms, conditions, exclusions, and definitions. Consult the complete policy for full details.$$,
+This policy provides essential cyber insurance coverage for technology risks. Coverage is subject to all policy terms, conditions, exclusions, and definitions. Consult the complete policy for full details.$POLICY3$,
 'POLICY_FORM', 'CYBER', 'Cyber & Data Breach', NULL, NULL, NULL, 'cyber insurance, data breach, ransomware, network security, privacy liability, HIPAA, business interruption', CURRENT_TIMESTAMP());
 
 -- ============================================================================
@@ -455,23 +455,23 @@ SELECT
         ELSE 'General Risk Assessment Report - ' || c.client_name
     END AS report_title,
     CASE (UNIFORM(0, 4, RANDOM()))
-        WHEN 0 THEN $$COMPREHENSIVE WORKPLACE SAFETY ASSESSMENT REPORT
+        WHEN 0 THEN $REPORT1$COMPREHENSIVE WORKPLACE SAFETY ASSESSMENT REPORT
 
-CLIENT: $$ || c.client_name || $$
-INDUSTRY: $$ || COALESCE(c.industry_vertical, 'General') || $$
-LOCATION: $$ || COALESCE(c.city, 'Unknown') || $$, $$ || COALESCE(c.state, 'N/A') || $$
-ASSESSMENT DATE: $$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $$
-CONSULTANT: $$ || COALESCE(lcs.consultant_name, 'Risk Consultant') || $$
+CLIENT: $REPORT1$ || c.client_name || $REPORT1$
+INDUSTRY: $REPORT1$ || COALESCE(c.industry_vertical, 'General') || $REPORT1$
+LOCATION: $REPORT1$ || COALESCE(c.city, 'Unknown') || $REPORT1$, $REPORT1$ || COALESCE(c.state, 'N/A') || $REPORT1$
+ASSESSMENT DATE: $REPORT1$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT1$
+CONSULTANT: $REPORT1$ || COALESCE(lcs.consultant_name, 'Risk Consultant') || $REPORT1$
 
 EXECUTIVE SUMMARY
 A comprehensive workplace safety assessment was conducted at the above-referenced facility. The assessment included interviews with management and employees, review of safety policies and procedures, inspection of physical premises, examination of injury and illness records, and evaluation of safety training programs. Overall, the facility demonstrates a commitment to workplace safety with several strong safety practices in place. However, opportunities for improvement were identified in several key areas that could reduce injury frequency and severity.
 
 FACILITY OVERVIEW
-- Total square footage: Approximately $$ || UNIFORM(10000, 100000, RANDOM()) || $$ sq ft
-- Number of employees: $$ || COALESCE(c.employee_count, 0) || $$
-- Operating hours: $$ || UNIFORM(1, 3, RANDOM()) || $$ shifts
-- Primary operations: $$ || COALESCE(c.industry_vertical, 'General business') || $$ activities
-- Years at current location: $$ || UNIFORM(1, 20, RANDOM()) || $$ years
+- Total square footage: Approximately $REPORT1$ || UNIFORM(10000, 100000, RANDOM()) || $REPORT1$ sq ft
+- Number of employees: $REPORT1$ || COALESCE(c.employee_count, 0) || $REPORT1$
+- Operating hours: $REPORT1$ || UNIFORM(1, 3, RANDOM()) || $REPORT1$ shifts
+- Primary operations: $REPORT1$ || COALESCE(c.industry_vertical, 'General business') || $REPORT1$ activities
+- Years at current location: $REPORT1$ || UNIFORM(1, 20, RANDOM()) || $REPORT1$ years
 
 SAFETY PROGRAM EVALUATION
 The facility has implemented a written safety program with designated safety committee. Monthly safety meetings are conducted with documented attendance. New employee orientation includes basic safety training. However, job-specific safety training documentation is incomplete. Annual refresher training is not consistently provided to all employees.
@@ -525,11 +525,11 @@ LOW PRIORITY (Action Within 90 Days):
 
 WORKERS COMPENSATION CLAIMS ANALYSIS
 Review of workers compensation claims for past 3 years reveals:
-- Total claims: $$ || UNIFORM(5, 30, RANDOM()) || $$
-- Most frequent injuries: Back strains ($$ || UNIFORM(20, 40, RANDOM()) || $$%), Slips/trips/falls ($$ || UNIFORM(15, 30, RANDOM()) || $$%), Hand injuries ($$ || UNIFORM(10, 20, RANDOM()) || $$%)
+- Total claims: $REPORT1$ || UNIFORM(5, 30, RANDOM()) || $REPORT1$
+- Most frequent injuries: Back strains ($REPORT1$ || UNIFORM(20, 40, RANDOM()) || $REPORT1$%), Slips/trips/falls ($REPORT1$ || UNIFORM(15, 30, RANDOM()) || $REPORT1$%), Hand injuries ($REPORT1$ || UNIFORM(10, 20, RANDOM()) || $REPORT1$%)
 - Most costly claims: Back injuries, Shoulder injuries, Knee injuries
-- Claim frequency trend: $$ || CASE WHEN UNIFORM(0,1,RANDOM())=0 THEN 'Increasing' ELSE 'Decreasing' END || $$
-- Average cost per claim: $$$ || UNIFORM(8000, 25000, RANDOM()) || $$
+- Claim frequency trend: $REPORT1$ || CASE WHEN UNIFORM(0,1,RANDOM())=0 THEN 'Increasing' ELSE 'Decreasing' END || $REPORT1$
+- Average cost per claim: $REPORT1$$$ || UNIFORM(8000, 25000, RANDOM()) || $REPORT1$
 
 Claims analysis indicates that manual material handling is the leading cause of injuries. Enhanced training on proper lifting techniques, increased use of mechanical lifting aids, and ergonomic job design could reduce injury frequency significantly.
 
@@ -585,7 +585,7 @@ Recommendations:
 - Provide ergonomic training to supervisors and employees
 
 ESTIMATED COST SAVINGS
-Implementation of the recommendations in this report is estimated to reduce workers compensation claims by $$ || UNIFORM(25, 50, RANDOM()) || $$% over the next 2 years. Based on current claim costs of approximately $$$ || UNIFORM(50000, 200000, RANDOM()) || $$ annually, this represents potential savings of $$$ || UNIFORM(25000, 100000, RANDOM()) || $$ per year. Additional benefits include:
+Implementation of the recommendations in this report is estimated to reduce workers compensation claims by $REPORT1$ || UNIFORM(25, 50, RANDOM()) || $REPORT1$% over the next 2 years. Based on current claim costs of approximately $REPORT1$$$ || UNIFORM(50000, 200000, RANDOM()) || $REPORT1$ annually, this represents potential savings of $REPORT1$$$ || UNIFORM(25000, 100000, RANDOM()) || $REPORT1$ per year. Additional benefits include:
 - Reduced insurance premiums through improved loss experience
 - Improved employee morale and productivity
 - Reduced absenteeism
@@ -593,21 +593,21 @@ Implementation of the recommendations in this report is estimated to reduce work
 - Lower potential for OSHA citations and penalties
 
 CONCLUSION
-This facility demonstrates commitment to employee safety. Implementation of the recommendations provided will further enhance the safety program and reduce injury frequency and severity. Mahoney Group Loss Control services are available to assist with implementation of recommendations, provide safety training, and conduct follow-up assessments. We recommend scheduling a follow-up assessment in 6 months to evaluate progress and identify any new concerns.$$
+This facility demonstrates commitment to employee safety. Implementation of the recommendations provided will further enhance the safety program and reduce injury frequency and severity. Mahoney Group Loss Control services are available to assist with implementation of recommendations, provide safety training, and conduct follow-up assessments. We recommend scheduling a follow-up assessment in 6 months to evaluate progress and identify any new concerns.$REPORT1$
 
-        WHEN 1 THEN $$FIRE SAFETY AND EMERGENCY PREPAREDNESS EVALUATION
+        WHEN 1 THEN $REPORT2$FIRE SAFETY AND EMERGENCY PREPAREDNESS EVALUATION
 
-FACILITY: $$ || c.client_name || $$
-DATE: $$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $$
-INSPECTOR: $$ || COALESCE(lcs.consultant_name, 'Risk Consultant') || $$
+FACILITY: $REPORT2$ || c.client_name || $REPORT2$
+DATE: $REPORT2$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT2$
+INSPECTOR: $REPORT2$ || COALESCE(lcs.consultant_name, 'Risk Consultant') || $REPORT2$
 
 SCOPE OF ASSESSMENT
 This fire safety and emergency preparedness evaluation assessed the facility's compliance with applicable fire codes, adequacy of fire protection systems, emergency planning and preparedness, and opportunities to reduce fire risk exposure.
 
 FIRE PROTECTION SYSTEMS
-- Sprinkler System: $$ || CASE WHEN UNIFORM(0,1,RANDOM())=0 THEN 'Wet pipe system throughout facility' ELSE 'Partial sprinkler coverage' END || $$
-- Fire Alarm: $$ || CASE WHEN UNIFORM(0,1,RANDOM())=0 THEN 'Addressable system with central monitoring' ELSE 'Local alarm system' END || $$
-- Fire Extinguishers: $$ || UNIFORM(15, 50, RANDOM()) || $$ extinguishers located throughout facility
+- Sprinkler System: $REPORT2$ || CASE WHEN UNIFORM(0,1,RANDOM())=0 THEN 'Wet pipe system throughout facility' ELSE 'Partial sprinkler coverage' END || $REPORT2$
+- Fire Alarm: $REPORT2$ || CASE WHEN UNIFORM(0,1,RANDOM())=0 THEN 'Addressable system with central monitoring' ELSE 'Local alarm system' END || $REPORT2$
+- Fire Extinguishers: $REPORT2$ || UNIFORM(15, 50, RANDOM()) || $REPORT2$ extinguishers located throughout facility
 - Emergency Lighting: Battery-powered emergency lights at exits
 - Exit Signs: Illuminated exit signs at all required locations
 
@@ -621,12 +621,12 @@ FINDINGS AND RECOMMENDATIONS
 7. Flammable liquid storage exceeds code limits - install approved storage cabinet
 8. Electrical panels lack clearance - maintain 36-inch clear space
 
-Emergency Action Plan requires updating to include current employee roster, designated assembly points, and evacuation procedures for disabled persons.$$
+Emergency Action Plan requires updating to include current employee roster, designated assembly points, and evacuation procedures for disabled persons.$REPORT2$
 
-        WHEN 2 THEN $$ERGONOMIC RISK ASSESSMENT
+        WHEN 2 THEN $REPORT3$ERGONOMIC RISK ASSESSMENT
 
-CLIENT: $$ || c.client_name || $$
-ASSESSMENT DATE: $$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $$
+CLIENT: $REPORT3$ || c.client_name || $REPORT3$
+ASSESSMENT DATE: $REPORT3$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT3$
 
 OBJECTIVE
 Evaluate workplace ergonomic risk factors contributing to musculoskeletal disorders and provide recommendations to reduce injury risk.
@@ -635,19 +635,19 @@ HIGH-RISK JOB TASKS IDENTIFIED
 Based on observations and employee interviews, the following job tasks present elevated ergonomic risk:
 
 1. Manual Material Handling
-   - Lifting frequency: $$ || UNIFORM(20, 100, RANDOM()) || $$ lifts per shift
-   - Average weight: $$ || UNIFORM(25, 50, RANDOM()) || $$ lbs
+   - Lifting frequency: $REPORT3$ || UNIFORM(20, 100, RANDOM()) || $REPORT3$ lifts per shift
+   - Average weight: $REPORT3$ || UNIFORM(25, 50, RANDOM()) || $REPORT3$ lbs
    - Lifting from floor level to shoulder height
    - Recommendation: Implement mechanical lifting aids, use lift tables to raise load to waist height
 
 2. Repetitive Upper Extremity Tasks
-   - Assembly operations requiring $$ || UNIFORM(3000, 8000, RANDOM()) || $$ repetitions per shift
+   - Assembly operations requiring $REPORT3$ || UNIFORM(3000, 8000, RANDOM()) || $REPORT3$ repetitions per shift
    - Forceful gripping and pinching
    - Awkward wrist postures
    - Recommendation: Job rotation, ergonomic tools, workstation redesign
 
 3. Prolonged Standing
-   - Standing $$ || UNIFORM(6, 10, RANDOM()) || $$ hours per shift without breaks
+   - Standing $REPORT3$ || UNIFORM(6, 10, RANDOM()) || $REPORT3$ hours per shift without breaks
    - Hard concrete surface
    - Recommendation: Anti-fatigue mats, sit-stand workstations, scheduled rest breaks
 
@@ -657,12 +657,12 @@ Priority 2 (Moderate Risk): Repetitive tasks - implement within 30 days
 Priority 3 (Lower Risk): Standing tasks - implement within 90 days
 
 ESTIMATED IMPACT
-Implementation of recommendations expected to reduce ergonomic injury claims by $$ || UNIFORM(30, 60, RANDOM()) || $$% within 12 months. Estimated annual savings: $$$ || UNIFORM(30000, 80000, RANDOM()) || $$.$$
+Implementation of recommendations expected to reduce ergonomic injury claims by $REPORT3$ || UNIFORM(30, 60, RANDOM()) || $REPORT3$% within 12 months. Estimated annual savings: $REPORT3$$$ || UNIFORM(30000, 80000, RANDOM()) || $REPORT3$.$REPORT3$
 
-        WHEN 3 THEN $$SLIP, TRIP, AND FALL HAZARD ANALYSIS
+        WHEN 3 THEN $REPORT4$SLIP, TRIP, AND FALL HAZARD ANALYSIS
 
-LOCATION: $$ || c.client_name || $$
-INSPECTION DATE: $$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $$
+LOCATION: $REPORT4$ || c.client_name || $REPORT4$
+INSPECTION DATE: $REPORT4$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT4$
 
 OVERVIEW
 Slip, trip, and fall incidents are among the most common workplace injuries. This assessment identified hazards contributing to fall risk and provides specific recommendations for hazard mitigation.
@@ -684,20 +684,20 @@ FALL PROTECTION
 Elevated work platforms require guardrails per OSHA standards. Current guardrails show damage and do not meet 42-inch height requirement. Immediate repair required.
 
 RECOMMENDATIONS
-Estimated cost of recommended improvements: $$$ || UNIFORM(15000, 40000, RANDOM()) || $$
-Estimated annual savings from injury prevention: $$$ || UNIFORM(25000, 75000, RANDOM()) || $$$$
+Estimated cost of recommended improvements: $REPORT4$$$ || UNIFORM(15000, 40000, RANDOM()) || $REPORT4$
+Estimated annual savings from injury prevention: $REPORT4$$$ || UNIFORM(25000, 75000, RANDOM()) || $REPORT4$.$REPORT4$
 
-        ELSE $$RISK ASSESSMENT REPORT
+        ELSE $REPORT5$RISK ASSESSMENT REPORT
 
-CLIENT: $$ || c.client_name || $$
-REPORT DATE: $$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $$
-CONSULTANT: $$ || COALESCE(lcs.consultant_name, 'Risk Consultant') || $$
+CLIENT: $REPORT5$ || c.client_name || $REPORT5$
+REPORT DATE: $REPORT5$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT5$
+CONSULTANT: $REPORT5$ || COALESCE(lcs.consultant_name, 'Risk Consultant') || $REPORT5$
 
 This comprehensive risk assessment evaluated workplace hazards and provided recommendations to enhance safety and reduce injury risk. Key findings include the need for enhanced safety training, improved housekeeping, repair of physical hazards, and implementation of formal safety procedures.
 
-Detailed recommendations provided to management with implementation timeline and estimated cost savings of $$$ || UNIFORM(20000, 100000, RANDOM()) || $$ annually through reduced workers compensation claims and improved safety culture.
+Detailed recommendations provided to management with implementation timeline and estimated cost savings of $REPORT5$$$ || UNIFORM(20000, 100000, RANDOM()) || $REPORT5$ annually through reduced workers compensation claims and improved safety culture.
 
-Follow-up assessment recommended in $$ || UNIFORM(6, 12, RANDOM()) || $$ months to verify implementation and measure effectiveness of recommendations.$$
+Follow-up assessment recommended in $REPORT5$ || UNIFORM(6, 12, RANDOM()) || $REPORT5$ months to verify implementation and measure effectiveness of recommendations.$REPORT5$
     END AS report_content,
     lcs.service_type AS report_type,
     c.industry_vertical,
