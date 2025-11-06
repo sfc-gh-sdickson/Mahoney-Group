@@ -33,7 +33,7 @@ SELECT
     SUM(cl.claim_amount_incurred) AS total_claim_costs,
     CASE 
         WHEN SUM(p.annual_premium) > 0 
-        THEN (SUM(cl.claim_amount_incurred) / SUM(p.annual_premium))::NUMBER(8,2)
+        THEN ROUND((SUM(cl.claim_amount_incurred) / SUM(p.annual_premium)), 2)
         ELSE 0 
     END AS loss_ratio,
     COUNT(DISTINCT bp.plan_id) AS total_benefit_plans,
@@ -81,7 +81,7 @@ SELECT
     SUM(cl.claim_amount_incurred) AS total_claim_costs,
     CASE 
         WHEN p.annual_premium > 0 
-        THEN (SUM(cl.claim_amount_incurred) / p.annual_premium)::NUMBER(8,2)
+        THEN ROUND((SUM(cl.claim_amount_incurred) / p.annual_premium), 2)
         ELSE 0 
     END AS loss_ratio
 FROM RAW.POLICIES p
@@ -158,9 +158,9 @@ SELECT
     SUM(bp.annual_premium) AS total_benefit_premium,
     COUNT(DISTINCT r.renewal_id) AS total_renewals,
     SUM(CASE WHEN r.renewal_status = 'RENEWED' THEN 1 ELSE 0 END) AS successful_renewals,
-    CASE 
+    CASE
         WHEN COUNT(DISTINCT r.renewal_id) > 0
-        THEN (SUM(CASE WHEN r.renewal_status = 'RENEWED' THEN 1 ELSE 0 END)::FLOAT / COUNT(DISTINCT r.renewal_id) * 100)::NUMBER(5,2)
+        THEN ROUND((SUM(CASE WHEN r.renewal_status = 'RENEWED' THEN 1 ELSE 0 END)::FLOAT / COUNT(DISTINCT r.renewal_id) * 100), 2)
         ELSE 0 
     END AS renewal_rate_pct,
     SUM(CASE WHEN p.competitive_win = TRUE THEN 1 ELSE 0 END) AS competitive_wins,
@@ -194,7 +194,7 @@ SELECT
     SUM(cl.claim_amount_incurred) AS total_claim_costs,
     CASE 
         WHEN SUM(p.annual_premium) > 0 
-        THEN (SUM(cl.claim_amount_incurred) / SUM(p.annual_premium))::NUMBER(8,2)
+        THEN ROUND((SUM(cl.claim_amount_incurred) / SUM(p.annual_premium)), 2)
         ELSE 0 
     END AS loss_ratio,
     COUNT(DISTINCT p.client_id) AS unique_clients
@@ -316,7 +316,7 @@ SELECT
     bp.monthly_premium,
     bp.annual_premium,
     bp.carrier_name,
-    (bp.annual_premium / NULLIF(bp.covered_employees, 0))::NUMBER(10,2) AS per_employee_cost
+    ROUND((bp.annual_premium / NULLIF(bp.covered_employees, 0)), 2) AS per_employee_cost
 FROM RAW.BENEFIT_PLANS bp
 JOIN RAW.CLIENTS c ON bp.client_id = c.client_id
 JOIN RAW.INSURANCE_AGENTS a ON bp.agent_id = a.agent_id;
