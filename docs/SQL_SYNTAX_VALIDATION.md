@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="../Snowflake_Logo.svg" alt="Snowflake Logo" width="200">
+</p>
+
 # Snowflake SQL Syntax Validation
 
 **Date:** 2025-01-06  
