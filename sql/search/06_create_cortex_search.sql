@@ -127,7 +127,8 @@ LIMIT 30000;
 -- ============================================================================
 INSERT INTO POLICY_DOCUMENTS VALUES
 ('DOC001', NULL, NULL, 'Commercial General Liability Policy Wording - Mahoney Group Standard Form',
-$POLICY1$COMMERCIAL GENERAL LIABILITY POLICY
+$POLICY1$
+COMMERCIAL GENERAL LIABILITY POLICY
 MAHONEY GROUP INSURANCE SERVICES
 
 POLICY DECLARATIONS AND COVERAGE FORM
@@ -225,7 +226,8 @@ This policy form must be attached to Declarations showing policy limits, premium
 'POLICY_FORM', 'LIABILITY', 'General Liability', NULL, NULL, NULL, 'commercial general liability, CGL, occurrence basis, bodily injury, property damage', CURRENT_TIMESTAMP()),
 
 ('DOC002', NULL, NULL, 'Workers Compensation Policy Overview - Arizona Coverage',
-$POLICY2$WORKERS COMPENSATION AND EMPLOYERS LIABILITY INSURANCE POLICY
+$POLICY2$
+WORKERS COMPENSATION AND EMPLOYERS LIABILITY INSURANCE POLICY
 MAHONEY GROUP INSURANCE SERVICES - ARIZONA COVERAGE
 
 GENERAL SECTION
@@ -310,7 +312,8 @@ This is a summary document. The actual policy contains detailed terms, condition
 'POLICY_FORM', 'WORKERS_COMP', 'Workers Compensation', 'AZ', NULL, NULL, 'workers compensation, Arizona, employers liability, workplace injury', CURRENT_TIMESTAMP()),
 
 ('DOC003', NULL, NULL, 'Cyber Insurance Policy - Data Breach and Network Security Coverage',
-$POLICY3$CYBER LIABILITY AND DATA BREACH INSURANCE POLICY
+$POLICY3$
+CYBER LIABILITY AND DATA BREACH INSURANCE POLICY
 MAHONEY GROUP INSURANCE SERVICES
 
 TECHNOLOGY ERRORS & OMISSIONS AND CYBER LIABILITY COVERAGE FORM
@@ -455,7 +458,8 @@ SELECT
         ELSE 'General Risk Assessment Report - ' || c.client_name
     END AS report_title,
     CASE (UNIFORM(0, 4, RANDOM()))
-        WHEN 0 THEN $REPORT1$COMPREHENSIVE WORKPLACE SAFETY ASSESSMENT REPORT
+        WHEN 0 THEN $REPORT1$
+COMPREHENSIVE WORKPLACE SAFETY ASSESSMENT REPORT
 
 CLIENT: $REPORT1$ || c.client_name || $REPORT1$
 INDUSTRY: $REPORT1$ || COALESCE(c.industry_vertical, 'General') || $REPORT1$
@@ -595,7 +599,8 @@ Implementation of the recommendations in this report is estimated to reduce work
 CONCLUSION
 This facility demonstrates commitment to employee safety. Implementation of the recommendations provided will further enhance the safety program and reduce injury frequency and severity. Mahoney Group Loss Control services are available to assist with implementation of recommendations, provide safety training, and conduct follow-up assessments. We recommend scheduling a follow-up assessment in 6 months to evaluate progress and identify any new concerns.$REPORT1$
 
-        WHEN 1 THEN $REPORT2$FIRE SAFETY AND EMERGENCY PREPAREDNESS EVALUATION
+        WHEN 1 THEN $REPORT2$
+FIRE SAFETY AND EMERGENCY PREPAREDNESS EVALUATION
 
 FACILITY: $REPORT2$ || c.client_name || $REPORT2$
 DATE: $REPORT2$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT2$
@@ -623,7 +628,8 @@ FINDINGS AND RECOMMENDATIONS
 
 Emergency Action Plan requires updating to include current employee roster, designated assembly points, and evacuation procedures for disabled persons.$REPORT2$
 
-        WHEN 2 THEN $REPORT3$ERGONOMIC RISK ASSESSMENT
+        WHEN 2 THEN $REPORT3$
+ERGONOMIC RISK ASSESSMENT
 
 CLIENT: $REPORT3$ || c.client_name || $REPORT3$
 ASSESSMENT DATE: $REPORT3$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT3$
@@ -659,7 +665,8 @@ Priority 3 (Lower Risk): Standing tasks - implement within 90 days
 ESTIMATED IMPACT
 Implementation of recommendations expected to reduce ergonomic injury claims by $REPORT3$ || UNIFORM(30, 60, RANDOM()) || $REPORT3$% within 12 months. Estimated annual savings: $REPORT3$$$ || UNIFORM(30000, 80000, RANDOM()) || $REPORT3$.$REPORT3$
 
-        WHEN 3 THEN $REPORT4$SLIP, TRIP, AND FALL HAZARD ANALYSIS
+        WHEN 3 THEN $REPORT4$
+SLIP, TRIP, AND FALL HAZARD ANALYSIS
 
 LOCATION: $REPORT4$ || c.client_name || $REPORT4$
 INSPECTION DATE: $REPORT4$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT4$
@@ -687,7 +694,8 @@ RECOMMENDATIONS
 Estimated cost of recommended improvements: $REPORT4$$$ || UNIFORM(15000, 40000, RANDOM()) || $REPORT4$
 Estimated annual savings from injury prevention: $REPORT4$$$ || UNIFORM(25000, 75000, RANDOM()) || $REPORT4$.$REPORT4$
 
-        ELSE $REPORT5$RISK ASSESSMENT REPORT
+        ELSE $REPORT5$
+RISK ASSESSMENT REPORT
 
 CLIENT: $REPORT5$ || c.client_name || $REPORT5$
 REPORT DATE: $REPORT5$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT5$
