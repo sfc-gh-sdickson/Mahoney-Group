@@ -179,7 +179,7 @@ SELECT
     DATEADD('year', 1, effective_date) AS expiration_date,
     ARRAY_CONSTRUCT('ACTIVE', 'ACTIVE', 'ACTIVE', 'EXPIRED', 'CANCELLED')[UNIFORM(0, 4, RANDOM())] AS policy_status,
     products.product_category AS policy_type,
-    UNIFORM(5000, 100000, RANDOM()) * products.base_rate AS annual_premium,
+    UNIFORM(5000, 100000, RANDOM()) * COALESCE(products.base_rate, 1.0) AS annual_premium,
     UNIFORM(100000, 10000000, RANDOM()) AS total_coverage_limit,
     UNIFORM(1000, 25000, RANDOM()) AS deductible_amount,
     (UNIFORM(0, 100, RANDOM()) < 35) AS competitive_win,
