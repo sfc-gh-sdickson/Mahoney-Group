@@ -109,6 +109,7 @@ SELECT
         WHEN 17 THEN 'Subrogation recovery on ' || cl.client_name || ' claim. Paid out $' || c.claim_amount_paid::VARCHAR || ' to insured. Third party clearly liable. Subrogation demand sent to responsible party and their carrier. Negotiations ongoing. Recovery potential: 75-100% of paid amount. Insured cooperation excellent. Evidence well documented. Liability clear based on police report and witness statements. Expect settlement of subrogation claim within 90 days. Will reimburse client deductible from recovery proceeds. Successful subrogation supports client retention and renewal terms.'
         WHEN 18 THEN 'Disputed claim for ' || cl.client_name || ' now in litigation. Complaint filed in Superior Court. Answer submitted denying allegations. Discovery schedule established. Both parties engaged in settlement discussions through mediation. Mediator neutral evaluation: $' || (c.claim_amount_incurred * 0.8)::NUMBER(12,2)::VARCHAR || '. Carrier willing to settle at mediator evaluation. Plaintiff countered at $' || (c.claim_amount_incurred * 1.2)::NUMBER(13,2)::VARCHAR || '. Additional mediation session scheduled. Client concerned about trial exposure and costs. Defense costs approaching $' || (c.claim_amount_incurred * 0.3)::NUMBER(12,2)::VARCHAR || '. Recommend settlement within authority to avoid further expense and uncertainty of trial.'
         WHEN 19 THEN 'Claim closed - full and final release obtained. ' || cl.client_name || ' claim concluded successfully. Total paid: $' || c.claim_amount_paid::VARCHAR || ' which is ' || ROUND(((c.claim_amount_paid / NULLIF(c.claim_amount_reserved, 0)) * 100), 2)::VARCHAR || '% of initial reserve. No coverage disputes. No bad faith allegations. Client satisfied with outcome. Adjuster file quality excellent. Claim handling time: ' || DATEDIFF('day', c.report_date, c.settlement_date) || ' days. Meets all KPI targets. File closed and archived. Positive outcome for all parties. Client relationship strengthened through professional claims handling.'
+        ELSE 'Claim note for ' || cl.client_name || ' regarding ' || c.claim_type || ' claim number ' || c.claim_number || '. Status: ' || c.claim_status || '. Adjuster assigned. Documentation in progress.'
     END AS note_text,
     ARRAY_CONSTRUCT('ADJUSTER_NOTE', 'INVESTIGATION_REPORT', 'SETTLEMENT_DISCUSSION', 'COVERAGE_ANALYSIS', 'SITE_INSPECTION')[UNIFORM(0, 4, RANDOM())] AS note_type,
     c.incident_date AS note_date,
@@ -451,6 +452,7 @@ SELECT
         WHEN 7 THEN 'Healthcare Facility Safety Assessment - ' || c.client_name
         WHEN 8 THEN 'Office Safety and Ergonomics Evaluation - ' || c.client_name
         WHEN 9 THEN 'Manufacturing Equipment Safety Review - ' || c.client_name
+        ELSE 'General Risk Assessment Report - ' || c.client_name
     END AS report_title,
     CASE (UNIFORM(0, 4, RANDOM()))
         WHEN 0 THEN $$COMPREHENSIVE WORKPLACE SAFETY ASSESSMENT REPORT
