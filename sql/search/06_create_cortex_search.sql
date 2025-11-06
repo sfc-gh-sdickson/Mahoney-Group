@@ -3,7 +3,7 @@
 -- ============================================================================
 -- Purpose: Create unstructured data tables and Cortex Search services for
 --          claim notes, policy documents, and loss control reports
--- Syntax verified against: https://docs.snowflake.com/en/sql-reference/sql/create-cortex-search
+-- Syntax verified against: https://docs.snowflake.com/en/sql-reference-commands
 -- ============================================================================
 
 USE DATABASE MAHONEY_GROUP_INTELLIGENCE;
@@ -125,316 +125,44 @@ LIMIT 30000;
 -- ============================================================================
 -- Step 6: Generate sample policy documents
 -- ============================================================================
-INSERT INTO POLICY_DOCUMENTS VALUES
-('DOC001', NULL, NULL, 'Commercial General Liability Policy Wording - Mahoney Group Standard Form',
-$POLICY1$
-COMMERCIAL GENERAL LIABILITY POLICY
-MAHONEY GROUP INSURANCE SERVICES
-
-POLICY DECLARATIONS AND COVERAGE FORM
-
-This Commercial General Liability (CGL) policy provides coverage for bodily injury, property damage, personal injury, and advertising injury claims. Coverage is provided on an occurrence basis.
-
-SECTION I - COVERAGES
-
-COVERAGE A: BODILY INJURY AND PROPERTY DAMAGE LIABILITY
-We will pay those sums that the insured becomes legally obligated to pay as damages because of "bodily injury" or "property damage" to which this insurance applies. We will have the right and duty to defend the insured against any "suit" seeking those damages. However, we will have no duty to defend the insured against any "suit" seeking damages for "bodily injury" or "property damage" to which this insurance does not apply.
-
-1. Insuring Agreement
-   a. We will pay those sums that the insured becomes legally obligated to pay as damages because of "bodily injury" or "property damage" to which this insurance applies. We will have the right and duty to defend the insured against any "suit" seeking those damages.
-   
-   b. This insurance applies to "bodily injury" and "property damage" only if:
-      (1) The "bodily injury" or "property damage" is caused by an "occurrence" that takes place in the "coverage territory";
-      (2) The "bodily injury" or "property damage" occurs during the policy period; and
-      (3) Prior to the policy period, no insured listed under Paragraph 1. of Section II – Who Is An Insured and no "employee" authorized by you to give or receive notice of an "occurrence" or claim, knew that the "bodily injury" or "property damage" had occurred, in whole or in part.
-
-2. Exclusions
-   This insurance does not apply to:
-   a. Expected Or Intended Injury
-   b. Contractual Liability
-   c. Liquor Liability
-   d. Workers Compensation And Similar Laws
-   e. Employer's Liability
-   f. Pollution
-   g. Aircraft, Auto Or Watercraft
-   h. Mobile Equipment
-   i. War
-   j. Professional Services
-   k. Damage To Property
-   l. Damage To Your Product
-   m. Damage To Your Work
-   n. Damage To Impaired Property Or Property Not Physically Injured
-   o. Recall Of Products, Work Or Impaired Property
-   p. Personal And Advertising Injury
-   q. Electronic Data
-
-COVERAGE B: PERSONAL AND ADVERTISING INJURY LIABILITY
-We will pay those sums that the insured becomes legally obligated to pay as damages because of "personal and advertising injury" to which this insurance applies.
-
-1. Insuring Agreement
-   a. We will pay those sums that the insured becomes legally obligated to pay as damages because of "personal and advertising injury" to which this insurance applies. We will have the right and duty to defend the insured against any "suit" seeking those damages.
-   
-   b. This insurance applies to "personal and advertising injury" caused by an offense arising out of your business but only if the offense was committed in the "coverage territory" during the policy period.
-
-2. Exclusions
-   Specific exclusions apply including knowing violation of rights, material published prior to policy period, criminal acts, breach of contract, and others.
-
-COVERAGE C: MEDICAL PAYMENTS
-We will pay medical expenses as described below for "bodily injury" caused by an accident:
-   a. On premises you own or rent;
-   b. On ways next to premises you own or rent; or
-   c. Because of your operations;
-provided that the accident takes place in the coverage territory during the policy period.
-
-SUPPLEMENTARY PAYMENTS - COVERAGES A AND B
-We will pay, with respect to any claim we investigate or settle, or any "suit" against an insured we defend:
-   1. All expenses we incur.
-   2. Up to $250 for cost of bail bonds.
-   3. Reasonable expenses incurred by the insured at our request.
-   4. All costs taxed against the insured in the "suit".
-   5. Prejudgment interest awarded against the insured.
-   6. All interest on the full amount of any judgment.
-
-SECTION II - WHO IS AN INSURED
-1. You are an insured (the Named Insured shown in the Declarations).
-2. Your employees, officers, directors, partners, and members are insureds while acting within the scope of their duties.
-3. Newly acquired or formed organizations are automatically covered for 180 days.
-
-SECTION III - LIMITS OF INSURANCE
-1. The Limits of Insurance shown in the Declarations and the rules below fix the most we will pay regardless of the number of insureds, claims, or persons injured.
-2. General Aggregate Limit applies separately to each project away from premises.
-3. Products-Completed Operations Aggregate Limit is the most we will pay for all damages under Coverage A arising out of the "products-completed operations hazard".
-4. Personal and Advertising Injury Limit is the most we will pay for all damages because of all "personal and advertising injury" sustained by any one person or organization.
-5. Each Occurrence Limit is the most we will pay for the sum of all damages because of all "bodily injury" and "property damage" arising out of any one "occurrence".
-6. Medical Expense Limit is the most we will pay for all medical expenses because of "bodily injury" sustained by any one person.
-
-SECTION IV - COMMERCIAL GENERAL LIABILITY CONDITIONS
-1. Bankruptcy
-2. Duties In The Event Of Occurrence, Offense, Claim Or Suit
-3. Legal Action Against Us
-4. Other Insurance
-5. Premium Audit
-6. Representations
-7. Separation Of Insureds
-8. Transfer Of Rights Of Recovery Against Others To Us
-9. When We Do Not Renew
-
-SECTION V - DEFINITIONS
-Key definitions include "bodily injury", "property damage", "occurrence", "personal and advertising injury", "products-completed operations hazard", "suit", "coverage territory", and others.
-
-This policy form must be attached to Declarations showing policy limits, premiums, deductibles, and specific endorsements. Coverage is subject to all policy terms, conditions, and exclusions.$POLICY1$,
-'POLICY_FORM', 'LIABILITY', 'General Liability', NULL, NULL, NULL, 'commercial general liability, CGL, occurrence basis, bodily injury, property damage', CURRENT_TIMESTAMP()),
-
-('DOC002', NULL, NULL, 'Workers Compensation Policy Overview - Arizona Coverage',
-$POLICY2$
-WORKERS COMPENSATION AND EMPLOYERS LIABILITY INSURANCE POLICY
-MAHONEY GROUP INSURANCE SERVICES - ARIZONA COVERAGE
-
-GENERAL SECTION
-This policy provides workers compensation insurance and employers liability insurance. Part One (Workers Compensation Insurance) is provided according to Arizona workers compensation law. Part Two (Employers Liability Insurance) protects against certain lawsuits by employees.
-
-PART ONE: WORKERS COMPENSATION INSURANCE
-We will pay promptly when due the benefits required of you by the workers compensation law of Arizona.
-
-A. How This Insurance Applies
-   1. This workers compensation insurance applies to bodily injury by accident or bodily injury by disease. Bodily injury includes resulting death.
-   2. Bodily injury by accident must occur during the policy period.
-   3. Bodily injury by disease must be caused or aggravated by the conditions of your employment. The employee's last day of last exposure to the conditions causing or aggravating such bodily injury by disease must occur during the policy period.
-
-B. We Will Defend
-   We have the right and duty to defend at our expense any claim, proceeding or suit against you for benefits payable by this insurance. We have the right to investigate and settle these claims, proceedings or suits.
-
-C. We Will Also Pay
-   We will also pay these costs, in addition to other amounts payable under this insurance, as part of any claim, proceeding, or suit we defend:
-   1. Reasonable expenses incurred at our request
-   2. Premiums for bonds to release attachments and for appeal bonds
-   3. Litigation costs taxed against you
-   4. Interest on a judgment
-   5. Expenses we incur
-
-D. Other States Insurance
-   If you begin work in any state listed in Item 3.C. of the Information Page after the effective date of this policy, we will provide coverage for that state. Coverage will be subject to applicable state workers compensation laws.
-
-E. Payments You Must Make
-   You are responsible for any payments in excess of the benefits regularly provided by the workers compensation law including those required because of your serious and willful misconduct.
-
-PART TWO: EMPLOYERS LIABILITY INSURANCE
-We will pay all sums you legally must pay as damages because of bodily injury to your employees, provided the bodily injury is covered by this Employers Liability Insurance.
-
-A. How This Insurance Applies
-   This Employers Liability Insurance applies to bodily injury by accident or bodily injury by disease. Bodily injury includes resulting death.
-   1. The bodily injury must arise out of and in the course of the injured employee's employment by you.
-   2. The employment must be necessary or incidental to your work in a state or territory listed in Item 3.A. of the Information Page.
-   3. Bodily injury by accident must occur during the policy period.
-   4. Bodily injury by disease must be caused or aggravated by the conditions of your employment.
-
-B. We Will Defend
-   We have the right and duty to defend, at our expense, any claim, proceeding or suit against you for damages payable by this insurance. We have the right to investigate and settle these claims, proceedings or suits.
-
-C. We Will Also Pay
-   We will also pay these costs as part of any claim, proceeding, or suit we defend:
-   1. Reasonable expenses incurred at our request
-   2. Premiums for bonds
-   3. Litigation costs taxed against you
-   4. Interest on judgments
-   5. Expenses we incur
-
-D. Exclusions
-   This insurance does not cover:
-   1. Liability assumed under a contract
-   2. Punitive or exemplary damages
-   3. Bodily injury to an employee while employed in violation of law
-   4. Bodily injury intentionally caused or aggravated by you
-   5. Bodily injury occurring outside the United States, its territories or possessions, and Canada
-   6. Damages arising out of coercion, criticism, demotion, evaluation, reassignment, discipline, defamation, harassment, humiliation, discrimination against or termination of any employee
-   7. Bodily injury to any person in work subject to the Longshore and Harbor Workers' Compensation Act, the Nonappropriated Fund Instrumentalities Act, or the Federal Coal Mine Health and Safety Act
-
-E. Limits of Liability
-   1. Bodily Injury by Accident - $1,000,000 each accident
-   2. Bodily Injury by Disease - $1,000,000 policy limit
-   3. Bodily Injury by Disease - $1,000,000 each employee
-
-PART THREE: OTHER STATES INSURANCE
-The Other States Insurance provision provides coverage for employees working in states not originally listed on your policy. This includes coverage for employees working temporarily in other states.
-
-PART FOUR: YOUR DUTIES IF INJURY OCCURS
-You must:
-1. Provide for immediate medical and other services required by the workers compensation law.
-2. Give us or our agent the names and addresses of the injured persons and of witnesses, and other information we may need.
-3. Promptly give us all notices, demands and legal papers related to the injury, claim, proceeding or suit.
-4. Cooperate with us in the investigation, settlement or defense of any claim, proceeding or suit.
-5. Do nothing after an injury occurs that would interfere with our right to recover from others.
-
-PART FIVE: PREMIUM
-Premium is based on your estimated payroll for the policy period, subject to audit after the policy expires. Different job classifications have different premium rates based on the risk of injury. Final premium is determined by actual payroll and job classifications during the policy year.
-
-This is a summary document. The actual policy contains detailed terms, conditions, exclusions, and definitions.$POLICY2$,
-'POLICY_FORM', 'WORKERS_COMP', 'Workers Compensation', 'AZ', NULL, NULL, 'workers compensation, Arizona, employers liability, workplace injury', CURRENT_TIMESTAMP()),
-
-('DOC003', NULL, NULL, 'Cyber Insurance Policy - Data Breach and Network Security Coverage',
-$POLICY3$
-CYBER LIABILITY AND DATA BREACH INSURANCE POLICY
-MAHONEY GROUP INSURANCE SERVICES
-
-TECHNOLOGY ERRORS & OMISSIONS AND CYBER LIABILITY COVERAGE FORM
-
-INSURING AGREEMENTS
-We will pay on behalf of the Insured all Loss and Claim Expenses that the Insured shall become legally obligated to pay resulting from any Claim first made against the Insured during the Policy Period or Extended Reporting Period (if applicable) for:
-
-1. TECHNOLOGY ERRORS & OMISSIONS LIABILITY
-   Any actual or alleged act, error, omission, or breach of duty by the Insured in the performance of Technology Services, including:
-   a. Failure to perform professional services as specified
-   b. Failure of technology products or services to perform as represented
-   c. Unintentional disclosure of confidential information
-   d. Infringement of intellectual property rights (limited coverage)
-
-2. NETWORK SECURITY LIABILITY
-   Any failure of Network Security resulting in:
-   a. Unauthorized access to or unauthorized use of the Insured's Computer System
-   b. Denial of service attack against the Insured's Computer System
-   c. Transmission of malicious code from the Insured's Computer System
-   d. Breach of security leading to unauthorized disclosure of data
-
-3. PRIVACY LIABILITY
-   Any actual or alleged violation of Privacy Regulations resulting from:
-   a. Disclosure or unauthorized access to personally identifiable information
-   b. Failure to prevent unauthorized access to sensitive data
-   c. Violation of privacy laws including HIPAA, GLBA, CCPA, or other applicable regulations
-   d. Failure to comply with the Insured's published privacy policy
-
-FIRST PARTY COVERAGES (Subject to separate sublimits)
-
-4. BREACH RESPONSE COSTS
-   We will pay reasonable and necessary costs incurred to respond to a Data Breach Event, including:
-   a. Forensic Investigation Costs - IT forensic analysis to determine breach cause and scope
-   b. Legal Costs - Attorneys' fees for breach response counsel
-   c. Notification Costs - Costs to notify affected individuals as required by law
-   d. Credit Monitoring - Credit monitoring and identity theft protection services for affected individuals
-   e. Crisis Management - Public relations and crisis management services
-   f. Regulatory Defense - Costs to defend regulatory proceedings and investigations
-
-5. CYBER EXTORTION
-   Payments made to extortionists threatening to:
-   a. Damage, disable, or shut down the Insured's Computer System
-   b. Introduce malicious code or ransomware
-   c. Disclose confidential or sensitive information
-   d. Launch a denial of service attack
-   Also includes fees for cyber security experts, negotiators, and ransom delivery
-
-6. BUSINESS INTERRUPTION
-   Loss of Net Income and Extra Expenses sustained by the Insured due to:
-   a. Necessary interruption of business operations caused by a Network Security Failure
-   b. System outage caused by a covered cyber incident
-   c. Denial of service attack
-   Coverage begins after Waiting Period (typically 8 hours) shown in Declarations
-
-7. DEPENDENT BUSINESS INTERRUPTION
-   Loss of Net Income and Extra Expenses due to interruption of a Dependent Business Partner's operations caused by a covered cyber incident affecting the partner's systems.
-
-8. DATA RESTORATION COSTS
-   Reasonable costs to restore, recreate, or recollect Data and Software damaged or destroyed by a covered cyber incident.
-
-9. CYBER CRIME/SOCIAL ENGINEERING
-   Direct financial loss sustained by the Insured resulting from:
-   a. Fraudulent Transfer of funds due to social engineering or phishing attack
-   b. Theft of funds resulting from unauthorized computer system access
-   c. Invoice manipulation by unauthorized third parties
-   Coverage subject to specific sublimit and enhanced authentication requirements
-
-EXCLUSIONS
-This insurance does not cover:
-1. Bodily injury or property damage (covered under CGL policy)
-2. Intentional or criminal acts
-3. Prior knowledge of circumstances that could lead to a claim
-4. Infrastructure failures (power outage, telecommunications failure)
-5. War and terrorism (unless terrorism coverage purchased)
-6. Contractual liability exceeding what would exist absent the contract
-7. Intellectual property infringement (except as specifically covered)
-8. Failure to maintain minimum security standards as required by policy
-9. Unencrypted portable devices or laptops (unless encryption waiver obtained)
-10. Payment card industry fines and penalties (PCI-DSS)
-11. Loss or damage to cryptocurrency or digital assets
-12. Losses covered by other insurance
-
-CONDITIONS
-1. Minimum Security Requirements
-   The Insured must maintain reasonable security measures including:
-   - Multi-factor authentication for remote access
-   - Encryption of sensitive data
-   - Regular security patches and updates
-   - Anti-virus and anti-malware software
-   - Firewall protection
-   - Regular data backups
-   - Employee security awareness training
-   - Incident response plan
-   
-   Failure to maintain these requirements may result in reduced coverage or denial of claims.
-
-2. Notification Requirements
-   The Insured must notify the Insurer within 72 hours of discovering a Data Breach Event or cyber incident that may result in a claim.
-
-3. Consent to Settle
-   The Insurer will not settle any claim without the Insured's consent, which shall not be unreasonably withheld.
-
-4. Cooperation
-   The Insured must cooperate fully with the Insurer's investigation and defense of claims.
-
-DEFINITIONS
-- Computer System: Hardware, software, networks, and electronic data processing systems
-- Data Breach Event: Unauthorized access to or acquisition of unencrypted personally identifiable information
-- Network Security Failure: Failure of security controls designed to protect Computer Systems
-- Privacy Regulations: Federal, state, and foreign laws governing collection, use, and disclosure of personal information
-- Technology Services: Professional services related to design, development, implementation, or support of technology systems
-
-LIMITS OF INSURANCE
-- Each Claim Limit: Maximum payable for any one claim
-- Aggregate Limit: Maximum payable for all claims during policy period
-- Sublimits apply separately to certain first-party coverages
-- Retention/Deductible applies to each claim
-- Claim Expenses may be within or outside limits depending on policy form
-
-This policy provides essential cyber insurance coverage for technology risks. Coverage is subject to all policy terms, conditions, exclusions, and definitions. Consult the complete policy for full details.$POLICY3$,
-'POLICY_FORM', 'CYBER', 'Cyber & Data Breach', NULL, NULL, NULL, 'cyber insurance, data breach, ransomware, network security, privacy liability, HIPAA, business interruption', CURRENT_TIMESTAMP());
+INSERT INTO POLICY_DOCUMENTS
+SELECT
+    'DOC' || LPAD(SEQ4(), 10, '0') AS document_id,
+    NULL AS policy_id,
+    NULL AS client_id,
+    CASE (UNIFORM(0, 9, RANDOM()))
+        WHEN 0 THEN 'Commercial General Liability Policy Form - Standard Coverage'
+        WHEN 1 THEN 'Workers Compensation Policy - State Specific Coverage'
+        WHEN 2 THEN 'Cyber Liability Insurance Policy - Data Breach Protection'
+        WHEN 3 THEN 'Directors and Officers Liability Policy - Executive Coverage'
+        WHEN 4 THEN 'Professional Liability Errors and Omissions Policy'
+        WHEN 5 THEN 'Employment Practices Liability Insurance Policy'
+        WHEN 6 THEN 'Commercial Property Insurance Policy - Building and Contents'
+        WHEN 7 THEN 'Business Auto Liability Policy - Fleet Coverage'
+        WHEN 8 THEN 'Umbrella Excess Liability Policy - Additional Limits'
+        ELSE 'General Liability Insurance Policy - Standard Form'
+    END AS document_title,
+    CASE (UNIFORM(0, 9, RANDOM()))
+        WHEN 0 THEN 'COMMERCIAL GENERAL LIABILITY INSURANCE POLICY. This policy provides coverage for bodily injury, property damage, personal injury and advertising injury. Coverage is provided on an occurrence basis. The policy includes general aggregate limits, products-completed operations aggregate, personal and advertising injury limits, each occurrence limits, fire damage limits, and medical expense limits. Policy includes standard exclusions for expected or intended injury, contractual liability, liquor liability, workers compensation, pollution, aircraft and watercraft. Insured duties include providing notice of occurrence or claim, cooperating with investigation and defense, and not making voluntary payments or assuming obligations. This is a claims-made policy requiring claims to be reported during the policy period.'
+        WHEN 1 THEN 'WORKERS COMPENSATION AND EMPLOYERS LIABILITY INSURANCE. This policy provides workers compensation insurance as required by state law and employers liability insurance. Part One covers benefits required by workers compensation law. Part Two provides employers liability coverage for lawsuits by employees. Coverage applies to bodily injury by accident or disease arising out of employment. Policy limits include per accident, disease policy limit, and disease per employee. Standard exclusions apply including intentional injury, liability assumed under contract, punitive damages, and employment-related practices. Premium based on payroll with different rates for job classifications.'
+        WHEN 2 THEN 'CYBER LIABILITY AND DATA BREACH INSURANCE. This policy provides coverage for network security failures, privacy breaches, technology errors and omissions. First party coverages include breach response costs, forensic investigation, notification costs, credit monitoring, public relations, cyber extortion, business interruption, and data restoration. Third party coverages include privacy liability, network security liability, and media liability. Policy includes sublimits for various first party coverages. Minimum security requirements must be maintained including multi-factor authentication, encryption, regular backups, anti-virus software, and employee training. Claims must be reported within 72 hours of discovery.'
+        WHEN 3 THEN 'DIRECTORS AND OFFICERS LIABILITY INSURANCE. This policy provides coverage for wrongful acts by directors and officers in their capacity as such. Coverage includes defense costs, settlements, and judgments. Policy covers derivative actions, securities claims, employment practices claims, and regulatory proceedings. Standard exclusions include intentional dishonest acts, personal profit, illegal remuneration, and bodily injury. Policy includes advancement of defense costs. Coverage is on a claims-made basis requiring reporting during policy period or extended reporting period. Policy includes provisions for allocation between insured and non-insured matters.'
+        WHEN 4 THEN 'PROFESSIONAL LIABILITY ERRORS AND OMISSIONS INSURANCE. This policy provides coverage for claims arising from professional services including negligence, errors, omissions, and breach of professional duty. Coverage includes defense costs and indemnity for settlements and judgments. Policy is claims-made requiring claim to be first made and reported during policy period. Standard exclusions include bodily injury, property damage, intentional acts, criminal acts, and employment practices. Prior acts coverage available subject to prior acts date. Tail coverage available for extended reporting period. Insured must maintain minimum professional standards and continuing education requirements.'
+        WHEN 5 THEN 'EMPLOYMENT PRACTICES LIABILITY INSURANCE. This policy provides coverage for employment-related claims including wrongful termination, discrimination, harassment, retaliation, failure to promote, and wage and hour violations. Coverage includes defense costs, settlements, and judgments. Policy covers claims brought by employees, former employees, and job applicants. Standard exclusions include bodily injury, violation of laws including WARN Act, intentional acts, and wage and hour claims in certain states. Policy requires implementation of employment practices policies and employee training. Claims made basis requiring reporting during policy period.'
+        WHEN 6 THEN 'COMMERCIAL PROPERTY INSURANCE POLICY. This policy provides coverage for direct physical loss or damage to covered property. Covered property includes buildings, business personal property, and personal property of others. Coverage provided on replacement cost or actual cash value basis. Standard perils covered include fire, lightning, windstorm, hail, explosion, aircraft, vehicles, smoke, vandalism, sprinkler leakage, and others. Standard exclusions include flood, earthquake, wear and tear, mechanical breakdown, and nuclear hazard. Policy includes coinsurance provision requiring minimum insurance to value. Additional coverages include debris removal, preservation of property, fire department service charge.'
+        WHEN 7 THEN 'BUSINESS AUTO LIABILITY INSURANCE POLICY. This policy provides coverage for liability arising from the ownership, maintenance, or use of covered autos. Coverage includes bodily injury and property damage liability. Policy covers owned autos, hired autos, and non-owned autos. Coverage provided on occurrence basis. Standard exclusions include intentional injury, workers compensation, property owned or transported, and racing. Policy includes provisions for uninsured and underinsured motorist coverage. Medical payments coverage available. Physical damage coverage available for collision and comprehensive perils. Fleet safety program required for large fleets.'
+        WHEN 8 THEN 'UMBRELLA EXCESS LIABILITY INSURANCE. This policy provides additional liability coverage in excess of underlying policies including general liability, auto liability, and employers liability. Coverage follows form of underlying policies with some differences. Policy includes drop down coverage when underlying limits exhausted. Standard exclusions include intentional acts, pollution, professional liability, and employment practices in some cases. Policy requires maintenance of underlying insurance with specified limits. Self-insured retention applies to claims not covered by underlying insurance. Policy coordination provisions address how coverage applies with underlying policies.'
+        ELSE 'GENERAL LIABILITY INSURANCE POLICY. This insurance policy provides coverage for various liability exposures. Coverage includes bodily injury liability and property damage liability. Policy provides defense and indemnity for covered claims. Standard policy terms, conditions, and exclusions apply. Insured must comply with policy conditions including notice provisions, cooperation requirements, and other duties. Policy limits are specified in declarations. Premium based on exposure basis and rating factors. This is a sample policy document for illustrative purposes showing standard insurance policy language and structure.'
+    END AS document_content,
+    'POLICY_FORM' AS document_type,
+    ARRAY_CONSTRUCT('LIABILITY', 'WORKERS_COMP', 'CYBER', 'DIRECTORS_OFFICERS', 'PROFESSIONAL', 'EMPLOYMENT', 'PROPERTY', 'AUTO', 'UMBRELLA', 'GENERAL')[UNIFORM(0, 9, RANDOM())] AS product_category,
+    ARRAY_CONSTRUCT('General Liability', 'Workers Compensation', 'Cyber & Data Breach', 'D&O', 'Professional Liability', 'Employment Practices', 'Commercial Property', 'Business Auto', 'Umbrella', 'Package')[UNIFORM(0, 9, RANDOM())] AS coverage_type,
+    ARRAY_CONSTRUCT('AZ', 'CA', 'TX', 'NY', 'FL', NULL)[UNIFORM(0, 5, RANDOM())] AS state,
+    NULL AS effective_date,
+    'v1.0' AS version,
+    'insurance policy, commercial insurance, business insurance, liability coverage' AS tags,
+    CURRENT_TIMESTAMP() AS created_at
+FROM TABLE(GENERATOR(ROWCOUNT => 10));
 
 -- ============================================================================
 -- Step 7: Generate sample loss control reports
@@ -448,7 +176,7 @@ SELECT
         WHEN 0 THEN 'Comprehensive Workplace Safety Assessment - ' || c.client_name
         WHEN 1 THEN 'Fire Safety and Emergency Preparedness Evaluation - ' || c.client_name
         WHEN 2 THEN 'Ergonomic Risk Assessment - ' || c.client_name
-        WHEN 3 THEN 'Slip, Trip, and Fall Hazard Analysis - ' || c.client_name
+        WHEN 3 THEN 'Slip Trip and Fall Hazard Analysis - ' || c.client_name
         WHEN 4 THEN 'Warehouse Safety Inspection Report - ' || c.client_name
         WHEN 5 THEN 'Construction Site Safety Audit - ' || c.client_name
         WHEN 6 THEN 'Restaurant Kitchen Safety Review - ' || c.client_name
@@ -457,256 +185,12 @@ SELECT
         WHEN 9 THEN 'Manufacturing Equipment Safety Review - ' || c.client_name
         ELSE 'General Risk Assessment Report - ' || c.client_name
     END AS report_title,
-    CASE (UNIFORM(0, 4, RANDOM()))
-        WHEN 0 THEN $REPORT1$
-COMPREHENSIVE WORKPLACE SAFETY ASSESSMENT REPORT
-
-CLIENT: $REPORT1$ || c.client_name || $REPORT1$
-INDUSTRY: $REPORT1$ || COALESCE(c.industry_vertical, 'General') || $REPORT1$
-LOCATION: $REPORT1$ || COALESCE(c.city, 'Unknown') || $REPORT1$, $REPORT1$ || COALESCE(c.state, 'N/A') || $REPORT1$
-ASSESSMENT DATE: $REPORT1$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT1$
-CONSULTANT: $REPORT1$ || COALESCE(lcs.consultant_name, 'Risk Consultant') || $REPORT1$
-
-EXECUTIVE SUMMARY
-A comprehensive workplace safety assessment was conducted at the above-referenced facility. The assessment included interviews with management and employees, review of safety policies and procedures, inspection of physical premises, examination of injury and illness records, and evaluation of safety training programs. Overall, the facility demonstrates a commitment to workplace safety with several strong safety practices in place. However, opportunities for improvement were identified in several key areas that could reduce injury frequency and severity.
-
-FACILITY OVERVIEW
-- Total square footage: Approximately $REPORT1$ || UNIFORM(10000, 100000, RANDOM()) || $REPORT1$ sq ft
-- Number of employees: $REPORT1$ || COALESCE(c.employee_count, 0) || $REPORT1$
-- Operating hours: $REPORT1$ || UNIFORM(1, 3, RANDOM()) || $REPORT1$ shifts
-- Primary operations: $REPORT1$ || COALESCE(c.industry_vertical, 'General business') || $REPORT1$ activities
-- Years at current location: $REPORT1$ || UNIFORM(1, 20, RANDOM()) || $REPORT1$ years
-
-SAFETY PROGRAM EVALUATION
-The facility has implemented a written safety program with designated safety committee. Monthly safety meetings are conducted with documented attendance. New employee orientation includes basic safety training. However, job-specific safety training documentation is incomplete. Annual refresher training is not consistently provided to all employees.
-
-Strengths Identified:
-- Management commitment to safety is evident
-- Safety committee meets regularly and addresses concerns
-- New employee orientation includes safety component
-- Injury reporting system is functioning
-- Personal protective equipment is provided
-- Emergency evacuation plan is posted
-
-Areas for Improvement:
-- Job-specific safety training needs enhancement
-- Annual refresher training program should be implemented
-- Safety training documentation requires better organization
-- Lockout/tagout program needs written procedures
-- Forklift operator certification records incomplete
-- Incident investigation process needs strengthening
-- Hazard communication program requires updating
-- Safety inspection frequency should increase
-
-PHYSICAL HAZARDS IDENTIFIED
-During the facility inspection, the following physical hazards requiring attention were documented:
-
-HIGH PRIORITY (Immediate Action Required):
-1. Electrical panel obstructed by storage - creates accessibility and fire hazard
-2. Exit door blocked by equipment - violates emergency egress requirements
-3. Fire extinguisher inspection tags not current - last inspection over 1 year ago
-4. Damaged ladder still in use - creates fall hazard
-5. Chemical storage area lacks proper ventilation - potential exposure concern
-
-MEDIUM PRIORITY (Action Within 30 Days):
-1. Inadequate lighting in warehouse aisles - increases trip/fall risk
-2. Uneven floor surfaces not marked - trip hazard
-3. Guardrails on elevated platform need repair - fall protection concern
-4. Eye wash station obstructed - emergency equipment access issue
-5. Extension cords used as permanent wiring - electrical safety violation
-6. Compressed gas cylinders not properly secured - tip over hazard
-7. Missing machine guards on equipment - caught-in hazard
-8. Inadequate aisle marking and pedestrian pathways - vehicle/pedestrian interaction
-9. Chemical containers not properly labeled - hazcom violation
-10. First aid kit supplies depleted - inadequate emergency response
-
-LOW PRIORITY (Action Within 90 Days):
-1. Safety signage needs updating and additional posting
-2. Housekeeping needs improvement in several areas
-3. Material storage heights exceed safe limits
-4. Loading dock lacks wheel chocks for trailers
-5. Break room lacks adequate seating
-
-WORKERS COMPENSATION CLAIMS ANALYSIS
-Review of workers compensation claims for past 3 years reveals:
-- Total claims: $REPORT1$ || UNIFORM(5, 30, RANDOM()) || $REPORT1$
-- Most frequent injuries: Back strains ($REPORT1$ || UNIFORM(20, 40, RANDOM()) || $REPORT1$%), Slips/trips/falls ($REPORT1$ || UNIFORM(15, 30, RANDOM()) || $REPORT1$%), Hand injuries ($REPORT1$ || UNIFORM(10, 20, RANDOM()) || $REPORT1$%)
-- Most costly claims: Back injuries, Shoulder injuries, Knee injuries
-- Claim frequency trend: $REPORT1$ || CASE WHEN UNIFORM(0,1,RANDOM())=0 THEN 'Increasing' ELSE 'Decreasing' END || $REPORT1$
-- Average cost per claim: $REPORT1$$$ || UNIFORM(8000, 25000, RANDOM()) || $REPORT1$
-
-Claims analysis indicates that manual material handling is the leading cause of injuries. Enhanced training on proper lifting techniques, increased use of mechanical lifting aids, and ergonomic job design could reduce injury frequency significantly.
-
-RECOMMENDATIONS AND ACTION PLAN
-The following recommendations are provided to enhance workplace safety and reduce injury frequency:
-
-IMMEDIATE ACTIONS (0-30 Days):
-1. Remove obstruction from electrical panel and post "Keep Clear" signage
-2. Relocate equipment blocking emergency exit
-3. Schedule fire extinguisher inspection and service
-4. Remove damaged ladder from service and replace
-5. Install ventilation in chemical storage area or relocate chemicals
-6. Conduct emergency evacuation drill and document
-7. Provide additional safety training for employees in high-risk positions
-
-SHORT-TERM ACTIONS (30-90 Days):
-1. Upgrade lighting in warehouse areas to minimum 30 foot-candles
-2. Repair uneven floor surfaces and install hazard marking
-3. Repair guardrails on elevated platform per OSHA standards
-4. Relocate items obstructing eye wash station
-5. Replace extension cords with permanent electrical wiring
-6. Install gas cylinder restraints in all storage locations
-7. Install machine guards on all equipment per manufacturer specifications
-8. Paint aisle markings and establish pedestrian walkways
-9. Implement hazard communication program with updated labels and SDS
-10. Restock first aid kits and assign monthly inspection responsibility
-
-LONG-TERM ACTIONS (90-180 Days):
-1. Develop and implement comprehensive written lockout/tagout program
-2. Create job-specific safety training program for all positions
-3. Implement annual safety training refresher for all employees
-4. Enhance incident investigation process with root cause analysis
-5. Increase safety inspection frequency to weekly with documented checklist
-6. Install additional safety signage throughout facility
-7. Implement formal housekeeping program with assigned responsibilities
-8. Develop safe material storage procedures and train employees
-9. Install wheel chocks at loading dock and train drivers
-10. Upgrade break room facilities
-
-ERGONOMIC ASSESSMENT
-Review of work processes identified several ergonomic concerns contributing to musculoskeletal injuries:
-- Manual lifting tasks exceed NIOSH recommended weight limits
-- Repetitive reaching above shoulder height
-- Prolonged standing without anti-fatigue mats
-- Awkward postures during assembly operations
-- Limited use of mechanical lifting aids
-
-Recommendations:
-- Implement mechanical lifting devices (hoists, lift tables, pallet jacks)
-- Redesign workstations to keep frequently used items within easy reach
-- Provide anti-fatigue mats at standing workstations
-- Rotate employees through different tasks to reduce repetitive motion
-- Provide ergonomic training to supervisors and employees
-
-ESTIMATED COST SAVINGS
-Implementation of the recommendations in this report is estimated to reduce workers compensation claims by $REPORT1$ || UNIFORM(25, 50, RANDOM()) || $REPORT1$% over the next 2 years. Based on current claim costs of approximately $REPORT1$$$ || UNIFORM(50000, 200000, RANDOM()) || $REPORT1$ annually, this represents potential savings of $REPORT1$$$ || UNIFORM(25000, 100000, RANDOM()) || $REPORT1$ per year. Additional benefits include:
-- Reduced insurance premiums through improved loss experience
-- Improved employee morale and productivity
-- Reduced absenteeism
-- Enhanced regulatory compliance
-- Lower potential for OSHA citations and penalties
-
-CONCLUSION
-This facility demonstrates commitment to employee safety. Implementation of the recommendations provided will further enhance the safety program and reduce injury frequency and severity. Mahoney Group Loss Control services are available to assist with implementation of recommendations, provide safety training, and conduct follow-up assessments. We recommend scheduling a follow-up assessment in 6 months to evaluate progress and identify any new concerns.$REPORT1$
-
-        WHEN 1 THEN $REPORT2$
-FIRE SAFETY AND EMERGENCY PREPAREDNESS EVALUATION
-
-FACILITY: $REPORT2$ || c.client_name || $REPORT2$
-DATE: $REPORT2$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT2$
-INSPECTOR: $REPORT2$ || COALESCE(lcs.consultant_name, 'Risk Consultant') || $REPORT2$
-
-SCOPE OF ASSESSMENT
-This fire safety and emergency preparedness evaluation assessed the facility's compliance with applicable fire codes, adequacy of fire protection systems, emergency planning and preparedness, and opportunities to reduce fire risk exposure.
-
-FIRE PROTECTION SYSTEMS
-- Sprinkler System: $REPORT2$ || CASE WHEN UNIFORM(0,1,RANDOM())=0 THEN 'Wet pipe system throughout facility' ELSE 'Partial sprinkler coverage' END || $REPORT2$
-- Fire Alarm: $REPORT2$ || CASE WHEN UNIFORM(0,1,RANDOM())=0 THEN 'Addressable system with central monitoring' ELSE 'Local alarm system' END || $REPORT2$
-- Fire Extinguishers: $REPORT2$ || UNIFORM(15, 50, RANDOM()) || $REPORT2$ extinguishers located throughout facility
-- Emergency Lighting: Battery-powered emergency lights at exits
-- Exit Signs: Illuminated exit signs at all required locations
-
-FINDINGS AND RECOMMENDATIONS
-1. Fire extinguisher annual inspection overdue - schedule service immediately
-2. Several exit doors locked from inside - install panic hardware
-3. Exit pathway obstructed by storage - maintain clear egress routes
-4. Emergency evacuation plan not posted in all areas - post building-wide
-5. Fire drill not conducted in past 12 months - conduct quarterly drills
-6. Hot work permit program not documented - implement written procedures
-7. Flammable liquid storage exceeds code limits - install approved storage cabinet
-8. Electrical panels lack clearance - maintain 36-inch clear space
-
-Emergency Action Plan requires updating to include current employee roster, designated assembly points, and evacuation procedures for disabled persons.$REPORT2$
-
-        WHEN 2 THEN $REPORT3$
-ERGONOMIC RISK ASSESSMENT
-
-CLIENT: $REPORT3$ || c.client_name || $REPORT3$
-ASSESSMENT DATE: $REPORT3$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT3$
-
-OBJECTIVE
-Evaluate workplace ergonomic risk factors contributing to musculoskeletal disorders and provide recommendations to reduce injury risk.
-
-HIGH-RISK JOB TASKS IDENTIFIED
-Based on observations and employee interviews, the following job tasks present elevated ergonomic risk:
-
-1. Manual Material Handling
-   - Lifting frequency: $REPORT3$ || UNIFORM(20, 100, RANDOM()) || $REPORT3$ lifts per shift
-   - Average weight: $REPORT3$ || UNIFORM(25, 50, RANDOM()) || $REPORT3$ lbs
-   - Lifting from floor level to shoulder height
-   - Recommendation: Implement mechanical lifting aids, use lift tables to raise load to waist height
-
-2. Repetitive Upper Extremity Tasks
-   - Assembly operations requiring $REPORT3$ || UNIFORM(3000, 8000, RANDOM()) || $REPORT3$ repetitions per shift
-   - Forceful gripping and pinching
-   - Awkward wrist postures
-   - Recommendation: Job rotation, ergonomic tools, workstation redesign
-
-3. Prolonged Standing
-   - Standing $REPORT3$ || UNIFORM(6, 10, RANDOM()) || $REPORT3$ hours per shift without breaks
-   - Hard concrete surface
-   - Recommendation: Anti-fatigue mats, sit-stand workstations, scheduled rest breaks
-
-IMPLEMENTATION PRIORITIES
-Priority 1 (High Risk): Material handling tasks - implement immediately
-Priority 2 (Moderate Risk): Repetitive tasks - implement within 30 days
-Priority 3 (Lower Risk): Standing tasks - implement within 90 days
-
-ESTIMATED IMPACT
-Implementation of recommendations expected to reduce ergonomic injury claims by $REPORT3$ || UNIFORM(30, 60, RANDOM()) || $REPORT3$% within 12 months. Estimated annual savings: $REPORT3$$$ || UNIFORM(30000, 80000, RANDOM()) || $REPORT3$.$REPORT3$
-
-        WHEN 3 THEN $REPORT4$
-SLIP, TRIP, AND FALL HAZARD ANALYSIS
-
-LOCATION: $REPORT4$ || c.client_name || $REPORT4$
-INSPECTION DATE: $REPORT4$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT4$
-
-OVERVIEW
-Slip, trip, and fall incidents are among the most common workplace injuries. This assessment identified hazards contributing to fall risk and provides specific recommendations for hazard mitigation.
-
-WALKING SURFACE HAZARDS
-1. Uneven floor transitions not marked - install beveled transitions and hazard marking
-2. Wet surfaces near entry during rain - install entrance mats and wet floor warning signs
-3. Poor lighting in stairwells - upgrade to minimum 30 foot-candles
-4. Damaged floor tiles in break room - repair or replace
-5. Extension cords across walkways - secure cords or reroute
-6. Debris and clutter in aisles - implement housekeeping program
-7. Missing handrails on stairs - install per code requirements
-8. Ice accumulation on exterior walkways in winter - implement ice management program
-
-LADDER SAFETY
-Several ladders showed signs of damage. Implement ladder inspection program and remove damaged ladders from service. Provide training on proper ladder use and selection.
-
-FALL PROTECTION
-Elevated work platforms require guardrails per OSHA standards. Current guardrails show damage and do not meet 42-inch height requirement. Immediate repair required.
-
-RECOMMENDATIONS
-Estimated cost of recommended improvements: $REPORT4$$$ || UNIFORM(15000, 40000, RANDOM()) || $REPORT4$
-Estimated annual savings from injury prevention: $REPORT4$$$ || UNIFORM(25000, 75000, RANDOM()) || $REPORT4$.$REPORT4$
-
-        ELSE $REPORT5$
-RISK ASSESSMENT REPORT
-
-CLIENT: $REPORT5$ || c.client_name || $REPORT5$
-REPORT DATE: $REPORT5$ || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || $REPORT5$
-CONSULTANT: $REPORT5$ || COALESCE(lcs.consultant_name, 'Risk Consultant') || $REPORT5$
-
-This comprehensive risk assessment evaluated workplace hazards and provided recommendations to enhance safety and reduce injury risk. Key findings include the need for enhanced safety training, improved housekeeping, repair of physical hazards, and implementation of formal safety procedures.
-
-Detailed recommendations provided to management with implementation timeline and estimated cost savings of $REPORT5$$$ || UNIFORM(20000, 100000, RANDOM()) || $REPORT5$ annually through reduced workers compensation claims and improved safety culture.
-
-Follow-up assessment recommended in $REPORT5$ || UNIFORM(6, 12, RANDOM()) || $REPORT5$ months to verify implementation and measure effectiveness of recommendations.$REPORT5$
-    END AS report_content,
+    'WORKPLACE SAFETY ASSESSMENT REPORT. Client: ' || c.client_name || 
+    '. Industry: ' || COALESCE(c.industry_vertical, 'General') || 
+    '. Location: ' || COALESCE(c.city, 'Unknown') || ', ' || COALESCE(c.state, 'N/A') || 
+    '. Assessment Date: ' || TO_CHAR(lcs.service_date, 'MM/DD/YYYY') || 
+    '. Consultant: ' || COALESCE(lcs.consultant_name, 'Risk Consultant') || 
+    '. EXECUTIVE SUMMARY: A comprehensive workplace safety assessment was conducted at the facility. The assessment included interviews with management and employees, review of safety policies and procedures, inspection of physical premises, examination of injury and illness records, and evaluation of safety training programs. Overall, the facility demonstrates a commitment to workplace safety with several strong safety practices in place. However, opportunities for improvement were identified in several key areas that could reduce injury frequency and severity. FACILITY OVERVIEW: Facility operations include ' || COALESCE(c.industry_vertical, 'general business') || ' activities with approximately ' || COALESCE(c.employee_count, 0) || ' employees. SAFETY PROGRAM EVALUATION: The facility has implemented a written safety program with designated safety committee. Monthly safety meetings are conducted with documented attendance. New employee orientation includes basic safety training. Job-specific safety training documentation requires enhancement. PHYSICAL HAZARDS IDENTIFIED: During the facility inspection, several physical hazards requiring attention were documented including electrical panels obstructed by storage, exit doors blocked by equipment, fire extinguisher inspections overdue, damaged equipment still in use, and chemical storage areas lacking proper ventilation. WORKERS COMPENSATION CLAIMS ANALYSIS: Review of workers compensation claims reveals manual material handling as the leading cause of injuries. Enhanced training on proper lifting techniques, increased use of mechanical lifting aids, and ergonomic job design could reduce injury frequency significantly. RECOMMENDATIONS: Immediate actions include removing obstructions from electrical panels and emergency exits, scheduling fire equipment inspections, removing damaged equipment from service, installing ventilation in chemical storage areas, and conducting emergency evacuation drills. Short-term actions include upgrading lighting, repairing floor surfaces, restoring guardrails to OSHA standards, replacing extension cords with permanent wiring, installing machine guards, painting aisle markings, implementing hazard communication program, and restocking first aid supplies. Long-term actions include developing comprehensive lockout tagout program, creating job-specific safety training program, implementing annual safety refreshers, enhancing incident investigation process, increasing safety inspection frequency, and implementing formal housekeeping program. ESTIMATED COST SAVINGS: Implementation of recommendations estimated to reduce workers compensation claims by ' || UNIFORM(25, 50, RANDOM()) || ' percent over next 2 years representing potential annual savings of ' || UNIFORM(25000, 100000, RANDOM()) || ' dollars per year. Additional benefits include reduced insurance premiums, improved employee morale and productivity, reduced absenteeism, enhanced regulatory compliance, and lower potential for OSHA citations. CONCLUSION: This facility demonstrates commitment to employee safety. Implementation of the recommendations provided will further enhance the safety program and reduce injury frequency and severity. Mahoney Group Loss Control services available to assist with implementation, provide training, and conduct follow-up assessments. Follow-up assessment recommended in 6 months.' AS report_content,
     lcs.service_type AS report_type,
     c.industry_vertical,
     ARRAY_CONSTRUCT('SLIPS_TRIPS_FALLS', 'ERGONOMICS', 'FIRE_SAFETY', 'ELECTRICAL_SAFETY', 'MATERIAL_HANDLING')[UNIFORM(0, 4, RANDOM())] AS risk_area,
@@ -797,5 +281,4 @@ SELECT PARSE_JSON(
       '{"query": "property damage settlement", "limit":5}'
   )
 )['results'] as results;
-
 
