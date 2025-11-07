@@ -187,94 +187,6 @@ CREATE OR REPLACE AGENT MAHONEY_GROUP_INTELLIGENCE_AGENT
           - Fire safety and emergency preparedness
           - Industry-specific safety guidance
     
-    # ========================================================================
-    # ML Model Procedures
-    # ========================================================================
-    - tool_spec:
-        type: "procedure"
-        name: "PredictClaimCost"
-        description: |
-          Predicts total incurred costs for claims using the CLAIM_COST_PREDICTOR model from Model Registry.
-          The model uses Linear Regression trained on historical claim patterns.
-          
-          Use when users ask to:
-          - Predict claim costs
-          - Forecast claim expenses
-          - Estimate total incurred costs
-          
-          Parameters:
-          - claim_type_filter: Filter by claim type (PROPERTY_DAMAGE, BODILY_INJURY, etc.) or empty for all
-          - industry_filter: Filter by industry (CONSTRUCTION, HEALTHCARE, etc.) or empty for all
-          
-          Returns: JSON with average predicted cost, total predicted cost, min/max costs
-          
-          Example: "Predict costs for open property damage claims in construction"
-        input_schema:
-          type: 'object'
-          properties:
-            claim_type_filter:
-              type: 'string'
-              description: 'Filter by claim type or empty string for all'
-            industry_filter:
-              type: 'string'
-              description: 'Filter by industry or empty string for all'
-          required: ['claim_type_filter', 'industry_filter']
-    
-    - tool_spec:
-        type: "procedure"
-        name: "DetectHighRiskClaims"
-        description: |
-          Identifies claims with high risk of exceeding $75K or involving litigation using the 
-          HIGH_RISK_CLAIMS_DETECTOR model from Model Registry. Uses Random Forest classifier.
-          
-          Use when users ask to:
-          - Identify high-risk claims
-          - Find claims needing enhanced review
-          - Screen for potential litigation
-          
-          Parameter:
-          - claim_status_filter: Filter by status (OPEN, UNDER_INVESTIGATION) or empty for both
-          
-          Returns: JSON with high-risk count, risk percentage, and recommendation
-          
-          Example: "Which open claims have high risk?"
-        input_schema:
-          type: 'object'
-          properties:
-            claim_status_filter:
-              type: 'string'
-              description: 'Filter by claim status or empty string for all'
-          required: ['claim_status_filter']
-    
-    - tool_spec:
-        type: "procedure"
-        name: "PredictRenewalLikelihood"
-        description: |
-          Predicts policy renewal probability using the RENEWAL_LIKELIHOOD_PREDICTOR model from 
-          Model Registry. Uses Logistic Regression based on satisfaction, loss ratio, and premium changes.
-          
-          Use when users ask to:
-          - Predict renewal likelihood
-          - Identify at-risk clients
-          - Forecast retention rates
-          
-          Parameters:
-          - industry_filter: Filter by industry (CONSTRUCTION, HEALTHCARE, etc.) or empty for all
-          - business_segment_filter: Filter by segment (SMALL_BUSINESS, MIDMARKET, LARGE_ACCOUNT) or empty
-          
-          Returns: JSON with renewal rate, at-risk client count, and retention recommendations
-          
-          Example: "Predict renewal likelihood for construction clients"
-        input_schema:
-          type: 'object'
-          properties:
-            industry_filter:
-              type: 'string'
-              description: 'Filter by industry or empty string for all'
-            business_segment_filter:
-              type: 'string'
-              description: 'Filter by business segment or empty string for all'
-          required: ['industry_filter', 'business_segment_filter']
 
   tool_resources:
     # Semantic View Configurations
@@ -305,16 +217,6 @@ CREATE OR REPLACE AGENT MAHONEY_GROUP_INTELLIGENCE_AGENT
       max_results: "10"
       title_column: "report_title"
       id_column: "report_id"
-    
-    # ML Procedure Configurations
-    PredictClaimCost:
-      procedure: "MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.PREDICT_CLAIM_COST"
-    
-    DetectHighRiskClaims:
-      procedure: "MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.DETECT_HIGH_RISK_CLAIMS"
-    
-    PredictRenewalLikelihood:
-      procedure: "MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.PREDICT_RENEWAL_LIKELIHOOD"
   $$;
 
 -- ============================================================================
@@ -332,20 +234,30 @@ DESCRIBE AGENT MAHONEY_GROUP_INTELLIGENCE_AGENT;
 -- ============================================================================
 -- NEXT STEPS
 -- ============================================================================
--- 1. BEFORE running this file, ensure ML models are set up:
---    - Upload and run notebooks/mahoney_ml_models.ipynb to train models
---    - Execute sql/ml/07_create_model_wrapper_functions.sql to create procedures
---    (The agent includes 3 ML procedure tools by default)
---
--- 2. Grant USAGE privileges on the agent to appropriate roles:
+-- 1. Grant USAGE privileges on the agent to appropriate roles:
 --    GRANT USAGE ON AGENT MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.MAHONEY_GROUP_INTELLIGENCE_AGENT TO ROLE <your_role>;
 --
--- 3. Navigate to Snowsight AI & ML > Agents to view and test the agent
+-- 2. Navigate to Snowsight AI & ML > Agents to view the agent
 --
--- 4. Test the agent with sample questions including ML predictions:
---    - "Predict claim costs for open property damage claims in construction"
---    - "Which open claims have high risk and should be flagged for enhanced review?"
---    - "Predict renewal likelihood for healthcare clients in the midmarket segment"
+-- 3. OPTIONAL: Add ML Procedures via Snowsight UI (Cannot be added via SQL)
+--    NOTE: Procedures must be added through the UI, not CREATE AGENT SQL
+--    
+--    Before adding procedures:
+--    - Upload and run notebooks/mahoney_ml_models.ipynb to train models
+--    - Execute sql/ml/07_create_model_wrapper_functions.sql to create procedures
+--    
+--    To add each procedure:
+--    a) In agent editor, click Tools > + Add > Procedure
+--    b) Select the procedure from dropdown:
+--       - MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.PREDICT_CLAIM_COST
+--       - MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.DETECT_HIGH_RISK_CLAIMS
+--       - MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.PREDICT_RENEWAL_LIKELIHOOD
+--    c) Add description (see docs/AGENT_SETUP.md for detailed descriptions)
+--    d) Click Add
+--    
+--    See docs/AGENT_SETUP.md "ML Step 5: Add ML Procedures to Agent" for full instructions
+--
+-- 4. Test the agent with simple and complex questions from sample_questions above
 --
 -- 5. For full test suite, see docs/questions.md
 -- ============================================================================
