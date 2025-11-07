@@ -142,8 +142,8 @@ def detect_high_risk(session, claim_status_filter):
     predictions = model.run(input_df, function_name="predict")
     
     # Count high-risk claims
-    result = predictions.select("HIGH_RISK_PREDICTION").to_pandas()
-    high_risk_count = int(result['HIGH_RISK_PREDICTION'].sum())
+    result = predictions.select("RISK_PREDICTION").to_pandas()
+    high_risk_count = int(result['RISK_PREDICTION'].sum())
     total_count = len(result)
     
     return json.dumps({
