@@ -3,7 +3,8 @@
 -- ============================================================================
 -- Purpose: Create Snowflake Intelligence Agent with semantic views, search services, and ML procedures
 -- Syntax verified: https://docs.snowflake.com/en/sql-reference/sql/create-agent
--- Prerequisites: Files 01-07 must be executed successfully
+-- Pattern verified: Axon Demo sql/agent/08_create_intelligence_agent.sql
+-- Prerequisites: Files 01-07 must be executed successfully (especially ML models and procedures)
 -- ============================================================================
 
 USE DATABASE MAHONEY_GROUP_INTELLIGENCE;
@@ -187,6 +188,50 @@ CREATE OR REPLACE AGENT MAHONEY_GROUP_INTELLIGENCE_AGENT
           - Fire safety and emergency preparedness
           - Industry-specific safety guidance
     
+    # ========================================================================
+    # ML Model Procedures (using 'generic' type)
+    # ========================================================================
+    - tool_spec:
+        type: 'generic'
+        name: 'PredictClaimCost'
+        description: 'Predicts total incurred costs for claims using ML model trained on historical claim patterns'
+        input_schema:
+          type: 'object'
+          properties:
+            claim_type_filter:
+              type: 'string'
+              description: 'Filter by claim type (PROPERTY, LIABILITY, AUTO, etc.) or empty string for all'
+            industry_filter:
+              type: 'string'
+              description: 'Filter by industry (CONSTRUCTION, HEALTHCARE, etc.) or empty string for all'
+          required: ['claim_type_filter', 'industry_filter']
+    
+    - tool_spec:
+        type: 'generic'
+        name: 'DetectHighRiskClaims'
+        description: 'Identifies claims with high risk of exceeding $75K or involving litigation'
+        input_schema:
+          type: 'object'
+          properties:
+            claim_status_filter:
+              type: 'string'
+              description: 'Filter by claim status (OPEN, UNDER_INVESTIGATION, etc.) or empty string for all'
+          required: ['claim_status_filter']
+    
+    - tool_spec:
+        type: 'generic'
+        name: 'PredictRenewalLikelihood'
+        description: 'Predicts policy renewal probability based on satisfaction, loss ratio, and relationship factors'
+        input_schema:
+          type: 'object'
+          properties:
+            industry_filter:
+              type: 'string'
+              description: 'Filter by industry (CONSTRUCTION, HEALTHCARE, etc.) or empty string for all'
+            business_segment_filter:
+              type: 'string'
+              description: 'Filter by business segment (SMALL_BUSINESS, MIDMARKET, LARGE_ACCOUNT) or empty string for all'
+          required: ['industry_filter', 'business_segment_filter']
 
   tool_resources:
     # Semantic View Configurations
@@ -217,6 +262,31 @@ CREATE OR REPLACE AGENT MAHONEY_GROUP_INTELLIGENCE_AGENT
       max_results: "10"
       title_column: "report_title"
       id_column: "report_id"
+    
+    # ML Procedure Configurations
+    PredictClaimCost:
+      type: 'procedure'
+      identifier: 'MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.PREDICT_CLAIM_COST'
+      execution_environment:
+        type: 'warehouse'
+        warehouse: 'MAHONEY_WH'
+        query_timeout: 60
+    
+    DetectHighRiskClaims:
+      type: 'procedure'
+      identifier: 'MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.DETECT_HIGH_RISK_CLAIMS'
+      execution_environment:
+        type: 'warehouse'
+        warehouse: 'MAHONEY_WH'
+        query_timeout: 60
+    
+    PredictRenewalLikelihood:
+      type: 'procedure'
+      identifier: 'MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.PREDICT_RENEWAL_LIKELIHOOD'
+      execution_environment:
+        type: 'warehouse'
+        warehouse: 'MAHONEY_WH'
+        query_timeout: 60
   $$;
 
 -- ============================================================================
@@ -234,31 +304,31 @@ DESCRIBE AGENT MAHONEY_GROUP_INTELLIGENCE_AGENT;
 -- ============================================================================
 -- NEXT STEPS
 -- ============================================================================
--- 1. Grant USAGE privileges on the agent to appropriate roles:
+-- 1. BEFORE running this file, ensure ML models and procedures are created:
+--    a) Upload and run notebooks/mahoney_ml_models.ipynb to train models
+--    b) Execute sql/ml/07_create_model_wrapper_functions.sql to create wrapper procedures
+--    (Agent includes 3 ML procedure tools - they must exist before agent creation)
+--
+-- 2. Grant USAGE privileges on ML procedures:
+--    GRANT USAGE ON PROCEDURE MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.PREDICT_CLAIM_COST(STRING, STRING) TO ROLE <your_role>;
+--    GRANT USAGE ON PROCEDURE MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.DETECT_HIGH_RISK_CLAIMS(STRING) TO ROLE <your_role>;
+--    GRANT USAGE ON PROCEDURE MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.PREDICT_RENEWAL_LIKELIHOOD(STRING, STRING) TO ROLE <your_role>;
+--
+-- 3. Grant USAGE privileges on the agent to appropriate roles:
 --    GRANT USAGE ON AGENT MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.MAHONEY_GROUP_INTELLIGENCE_AGENT TO ROLE <your_role>;
 --
--- 2. Navigate to Snowsight AI & ML > Agents to view the agent
+-- 4. Navigate to Snowsight AI & ML > Agents to view and test the agent
 --
--- 3. OPTIONAL: Add ML Procedures via Snowsight UI (Cannot be added via SQL)
---    NOTE: Procedures must be added through the UI, not CREATE AGENT SQL
---    
---    Before adding procedures:
---    - Upload and run notebooks/mahoney_ml_models.ipynb to train models
---    - Execute sql/ml/07_create_model_wrapper_functions.sql to create procedures
---    
---    To add each procedure:
---    a) In agent editor, click Tools > + Add > Procedure
---    b) Select the procedure from dropdown:
---       - MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.PREDICT_CLAIM_COST
---       - MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.DETECT_HIGH_RISK_CLAIMS
---       - MAHONEY_GROUP_INTELLIGENCE.ANALYTICS.PREDICT_RENEWAL_LIKELIHOOD
---    c) Add description (see docs/AGENT_SETUP.md for detailed descriptions)
---    d) Click Add
---    
---    See docs/AGENT_SETUP.md "ML Step 5: Add ML Procedures to Agent" for full instructions
+-- 5. Test the agent with all 15 sample questions:
+--    - 5 simple questions (client counts, premium totals, etc.)
+--    - 5 complex questions (loss ratios, competitive wins, etc.)
+--    - 5 ML prediction questions (claim cost, high-risk, renewal likelihood)
 --
--- 4. Test the agent with simple and complex questions from sample_questions above
+-- 6. For full test suite and expected results, see docs/questions.md
 --
--- 5. For full test suite, see docs/questions.md
+-- Agent now includes 9 tools:
+-- - 3 Cortex Analyst (semantic views)
+-- - 3 Cortex Search (unstructured data)
+-- - 3 ML Procedures (predictive models)
 -- ============================================================================
 
