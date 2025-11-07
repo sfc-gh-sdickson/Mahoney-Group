@@ -46,14 +46,17 @@ def predict_claim_cost(session, claim_type_filter, industry_filter):
     SELECT
         c.claim_type,
         c.claim_category,
+        c.loss_type,
         c.severity,
         cl.industry_vertical,
-        cl.business_segment,
-        cl.client_tenure_years::FLOAT AS client_tenure,
-        cl.annual_premium_volume::FLOAT AS annual_premium,
-        COALESCE(c.days_to_settle, 0)::FLOAT AS days_to_settle,
+        cl.employee_count::FLOAT AS client_size,
+        cl.risk_rating,
         prod.product_category,
         prod.coverage_type,
+        p.policy_type,
+        DATEDIFF('day', c.incident_date, c.report_date)::FLOAT AS days_to_report,
+        c.litigation_involved::BOOLEAN AS has_litigation,
+        c.subrogation_potential::BOOLEAN AS has_subrogation,
         0.0::FLOAT AS total_incurred
     FROM RAW.CLAIMS c
     JOIN RAW.CLIENTS cl ON c.client_id = cl.client_id
@@ -115,16 +118,15 @@ def detect_high_risk(session, claim_status_filter):
     SELECT
         c.claim_type,
         c.claim_category,
+        c.loss_type,
         c.severity,
         cl.industry_vertical,
+        cl.risk_rating,
+        prod.product_category,
+        p.policy_type,
         DATEDIFF('day', c.incident_date, c.report_date)::FLOAT AS days_to_report,
         c.litigation_involved::BOOLEAN AS has_litigation,
-        COALESCE(cl.total_claim_history, 0)::FLOAT AS prior_claims,
-        CASE WHEN c.claim_amount_paid > 0 
-             THEN (c.claim_amount_incurred / NULLIF(c.claim_amount_paid, 0))::FLOAT 
-             ELSE 0.0 END AS incurred_paid_ratio,
-        prod.product_category,
-        prod.coverage_type,
+        c.subrogation_potential::BOOLEAN AS has_subrogation,
         FALSE::BOOLEAN AS is_high_risk
     FROM RAW.CLAIMS c
     JOIN RAW.CLIENTS cl ON c.client_id = cl.client_id
@@ -181,24 +183,30 @@ def predict_renewal(session, industry_filter, business_segment_filter):
     model = reg.get_model("RENEWAL_LIKELIHOOD_PREDICTOR").default
     
     # Build query
-    industry = f"AND c.industry_vertical = '{industry_filter}'" if industry_filter else ""
-    segment = f"AND c.business_segment = '{business_segment_filter}'" if business_segment_filter else ""
+    industry = f"AND cl.industry_vertical = '{industry_filter}'" if industry_filter else ""
+    segment = f"AND cl.business_segment = '{business_segment_filter}'" if business_segment_filter else ""
     
     query = f"""
     SELECT
+        cl.client_status,
+        cl.industry_vertical,
+        cl.business_segment,
+        cl.risk_rating,
+        cl.employee_count::FLOAT AS client_size,
+        DATEDIFF('year', cl.onboarding_date, CURRENT_DATE())::FLOAT AS years_as_client,
+        cl.client_satisfaction_score::FLOAT AS satisfaction_score,
         prod.product_category,
         prod.coverage_type,
-        c.industry_vertical,
-        c.business_segment,
-        c.client_tenure_years::FLOAT AS client_tenure,
-        c.client_satisfaction_score::FLOAT AS satisfaction_score,
-        COALESCE(c.total_claim_history, 0)::FLOAT AS claim_count,
-        p.annual_premium::FLOAT AS annual_premium,
-        DATEDIFF('day', p.effective_date, p.expiration_date)::FLOAT AS policy_duration,
         p.policy_type,
-        FALSE::BOOLEAN AS renewed
+        DATEDIFF('year', p.effective_date, CURRENT_DATE())::FLOAT AS policy_years,
+        (SELECT COUNT(*) FROM RAW.CLAIMS c WHERE c.policy_id = p.policy_id)::FLOAT AS claims_count,
+        COALESCE((SELECT SUM(c.claim_amount_incurred) FROM RAW.CLAIMS c WHERE c.policy_id = p.policy_id), 0)::FLOAT AS total_claims_cost,
+        CASE WHEN p.annual_premium > 0 
+             THEN (COALESCE((SELECT SUM(c.claim_amount_incurred) FROM RAW.CLAIMS c WHERE c.policy_id = p.policy_id), 0) / p.annual_premium)::FLOAT
+             ELSE 0.0 END AS loss_ratio,
+        FALSE::BOOLEAN AS did_renew
     FROM RAW.POLICIES p
-    JOIN RAW.CLIENTS c ON p.client_id = c.client_id
+    JOIN RAW.CLIENTS cl ON p.client_id = cl.client_id
     JOIN RAW.INSURANCE_PRODUCTS prod ON p.product_id = prod.product_id
     WHERE p.policy_status = 'ACTIVE'
       AND DATEDIFF('day', CURRENT_DATE(), p.expiration_date) BETWEEN 0 AND 90 {industry} {segment}
