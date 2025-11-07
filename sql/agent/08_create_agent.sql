@@ -68,16 +68,39 @@ CREATE OR REPLACE AGENT MAHONEY_GROUP_INTELLIGENCE_AGENT
       You are a friendly and knowledgeable agent that helps with insurance, claims, and employee benefits analysis questions for Mahoney Group.
     
     sample_questions:
-      - question: "Which industries have the highest claim costs?"
-        answer: "I'll analyze claim costs by industry using the claims management data."
-      - question: "What is our competitive win rate against major carriers?"
-        answer: "I'll query the commercial insurance data to show competitive wins."
-      - question: "Search claim notes for successful settlement strategies"
-        answer: "I'll search the claim notes for settlement strategy examples."
-      - question: "Show renewal rates by business segment"
-        answer: "I'll analyze renewal rates across different business segments."
-      - question: "What are per-employee benefit costs?"
-        answer: "I'll calculate per-employee costs from the benefits data."
+      # Simple Questions (5)
+      - question: "How many clients does Mahoney Group have in each industry vertical?"
+        answer: "I'll count clients by industry vertical using the commercial insurance data."
+      - question: "What is the total annual premium written across all policies?"
+        answer: "I'll sum the annual premium from all policies."
+      - question: "How many claims are currently in OPEN or UNDER_INVESTIGATION status?"
+        answer: "I'll count active claims with those statuses."
+      - question: "Which agent has written the most premium this year?"
+        answer: "I'll analyze agent performance to find the top producer by premium written."
+      - question: "What is the average claim cost for settled claims?"
+        answer: "I'll calculate the average cost for all settled claims."
+      
+      # Complex Questions (10)
+      - question: "Analyze loss ratios by insurance product category. Show total premium, total claims incurred, loss ratio percentage, and profitability for each product line. Which products are most profitable?"
+        answer: "I'll analyze loss ratios across product categories with premium and claims data to identify the most profitable products."
+      - question: "What is Mahoney Group's competitive win rate? Show total competitive wins by previous carrier (Travelers, Hartford, Zurich, Liberty Mutual, AIG, Chubb, CNA), premium captured from each competitor, and which industries we're winning in."
+        answer: "I'll analyze competitive wins by carrier and industry, showing win rates and premium captured."
+      - question: "Analyze agent performance metrics. Show total premium written, number of clients, average policy size, renewal rate, client satisfaction score, and competitive wins by agent. Rank agents by total production."
+        answer: "I'll create a comprehensive agent performance dashboard with all productivity metrics ranked by production."
+      - question: "Identify high-risk clients requiring intervention. Show clients with loss ratio >80%, claim frequency above industry average, risk rating of C+ or below, and client satisfaction <4.0. Calculate potential premium impact of risk reduction."
+        answer: "I'll identify at-risk clients using multiple risk factors and calculate the premium exposure."
+      - question: "Analyze claim costs by industry vertical and claim type. Show average incurred cost, total claims, claim frequency rate (claims per policy), and litigation percentage for each combination. Identify highest-cost segments."
+        answer: "I'll create a cross-tabulation of claim costs by industry and type, identifying the most expensive segments."
+      - question: "Analyze policy renewal performance. Show renewal rate by business segment and industry, average premium change at renewal, and identify clients at risk of non-renewal based on loss ratio, premium increases >20%, and satisfaction scores. Estimate premium at risk."
+        answer: "I'll analyze renewal rates and identify at-risk clients with premium exposure calculations."
+      - question: "Analyze claims adjuster performance. Show average days to settle, average claim cost, claims handled per month, client satisfaction rating, and percentage of claims with disputes by adjuster type. Which adjuster types are most efficient?"
+        answer: "I'll create an adjuster efficiency analysis comparing performance metrics across adjuster types."
+      - question: "Analyze performance by state. Show total premium, policy count, average premium per policy, loss ratio, competitive win rate, and market penetration by state. Identify expansion opportunities in states with low penetration but favorable loss ratios."
+        answer: "I'll analyze geographic market performance to identify growth opportunities."
+      - question: "Analyze employee benefits program performance. Show total covered employees, premium per employee, plan enrollment by type (HEALTH, DENTAL, VISION, LIFE), carrier performance, and clients with comprehensive vs. limited benefits. Calculate average benefits spend per employee by industry."
+        answer: "I'll analyze benefits program metrics including per-employee costs and plan mix by industry."
+      - question: "Analyze claim dispute and litigation trends. Show dispute rate by claim type and industry, average legal costs, average settlement amounts, resolution methods (mediation, arbitration, litigation), resolution times, and outcomes. Which disputes are most costly?"
+        answer: "I'll analyze litigation trends including costs, resolution methods, and outcomes to identify the most expensive dispute types."
 
   tools:
     # ========================================================================
