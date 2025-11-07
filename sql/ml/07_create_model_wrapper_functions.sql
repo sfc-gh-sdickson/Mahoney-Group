@@ -1,9 +1,10 @@
 -- ============================================================================
--- Mahoney Group Intelligence Agent - ML Model Wrapper Functions
+-- Mahoney Group Intelligence Agent - Model Registry Wrapper Procedures
 -- ============================================================================
--- Purpose: Create stored procedures that wrap ML models from Model Registry
---          so the Intelligence Agent can call them as tools
--- Prerequisites: ML models must be trained and registered via notebook
+-- Purpose: Create Python procedures that wrap Model Registry models
+--          so they can be added as tools to the Intelligence Agent
+-- Based on: Zenith Demo Model Registry integration pattern
+-- Syntax verified: https://docs.snowflake.com/en/sql-reference/sql/create-procedure
 -- ============================================================================
 
 USE DATABASE MAHONEY_GROUP_INTELLIGENCE;
@@ -11,153 +12,231 @@ USE SCHEMA ANALYTICS;
 USE WAREHOUSE MAHONEY_WH;
 
 -- ============================================================================
--- Procedure 1: PREDICT_CLAIM_COST
--- Purpose: Predicts total incurred costs for claims using ML model
+-- Procedure 1: Claim Cost Prediction Wrapper
 -- ============================================================================
+
+-- Drop if exists (in case it was created as FUNCTION before)
+DROP FUNCTION IF EXISTS PREDICT_CLAIM_COST(STRING, STRING);
+
 CREATE OR REPLACE PROCEDURE PREDICT_CLAIM_COST(
-    CLAIM_TYPE_FILTER VARCHAR,
-    INDUSTRY_FILTER VARCHAR
+    CLAIM_TYPE_FILTER STRING,
+    INDUSTRY_FILTER STRING
 )
-RETURNS VARCHAR
-LANGUAGE SQL
+RETURNS STRING
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.10'
+PACKAGES = ('snowflake-ml-python', 'scikit-learn')
+HANDLER = 'predict_claim_cost'
+COMMENT = 'Calls CLAIM_COST_PREDICTOR model from Model Registry to predict claim costs'
 AS
 $$
-DECLARE
-    result_json VARCHAR;
-BEGIN
-    -- Call the claim cost prediction model from Model Registry
-    -- Filter claims based on input parameters
-    -- Return JSON with prediction results
+def predict_claim_cost(session, claim_type_filter, industry_filter):
+    from snowflake.ml.registry import Registry
+    import json
     
-    SELECT OBJECT_CONSTRUCT(
-        'status', 'success',
-        'claim_type_filter', :CLAIM_TYPE_FILTER,
-        'industry_filter', :INDUSTRY_FILTER,
-        'message', 'Claim cost prediction model called successfully',
-        'note', 'Model predicts costs based on claim characteristics, client industry, and historical patterns',
-        'predicted_avg_cost', (
-            SELECT AVG(claim_amount_incurred)::NUMBER(12,2)
-            FROM MAHONEY_GROUP_INTELLIGENCE.RAW.CLAIMS c
-            JOIN MAHONEY_GROUP_INTELLIGENCE.RAW.CLIENTS cl ON c.client_id = cl.client_id
-            WHERE (:CLAIM_TYPE_FILTER = '' OR c.claim_type = :CLAIM_TYPE_FILTER)
-              AND (:INDUSTRY_FILTER = '' OR cl.industry_vertical = :INDUSTRY_FILTER)
-              AND c.claim_status IN ('SETTLED', 'CLOSED')
-        ),
-        'total_claims_analyzed', (
-            SELECT COUNT(*)
-            FROM MAHONEY_GROUP_INTELLIGENCE.RAW.CLAIMS c
-            JOIN MAHONEY_GROUP_INTELLIGENCE.RAW.CLIENTS cl ON c.client_id = cl.client_id
-            WHERE (:CLAIM_TYPE_FILTER = '' OR c.claim_type = :CLAIM_TYPE_FILTER)
-              AND (:INDUSTRY_FILTER = '' OR cl.industry_vertical = :INDUSTRY_FILTER)
-              AND c.claim_status IN ('SETTLED', 'CLOSED')
-        )
-    )::VARCHAR
-    INTO result_json;
+    # Get model from registry
+    reg = Registry(session=session, database_name="MAHONEY_GROUP_INTELLIGENCE", schema_name="ANALYTICS")
+    model = reg.get_model("CLAIM_COST_PREDICTOR").default
     
-    RETURN result_json;
-END;
+    # Build query with optional filters
+    claim_filter = f"AND c.claim_type = '{claim_type_filter}'" if claim_type_filter else ""
+    industry = f"AND cl.industry_vertical = '{industry_filter}'" if industry_filter else ""
+    
+    query = f"""
+    SELECT
+        c.claim_type,
+        c.claim_category,
+        c.severity,
+        cl.industry_vertical,
+        cl.business_segment,
+        cl.client_tenure_years::FLOAT AS client_tenure,
+        cl.annual_premium_volume::FLOAT AS annual_premium,
+        COALESCE(c.days_to_settle, 0)::FLOAT AS days_to_settle,
+        prod.product_category,
+        prod.coverage_type,
+        0.0::FLOAT AS total_incurred
+    FROM RAW.CLAIMS c
+    JOIN RAW.CLIENTS cl ON c.client_id = cl.client_id
+    JOIN RAW.POLICIES p ON c.policy_id = p.policy_id
+    JOIN RAW.INSURANCE_PRODUCTS prod ON p.product_id = prod.product_id
+    WHERE c.claim_status = 'OPEN' {claim_filter} {industry}
+    LIMIT 50
+    """
+    
+    input_df = session.sql(query)
+    
+    # Get predictions
+    predictions = model.run(input_df, function_name="predict")
+    
+    # Calculate statistics
+    result = predictions.select("PREDICTED_COST").to_pandas()
+    
+    return json.dumps({
+        "claim_type_filter": claim_type_filter or "ALL",
+        "industry_filter": industry_filter or "ALL",
+        "total_claims_analyzed": len(result),
+        "avg_predicted_cost": round(float(result['PREDICTED_COST'].mean()), 2),
+        "total_predicted_cost": round(float(result['PREDICTED_COST'].sum()), 2),
+        "min_predicted_cost": round(float(result['PREDICTED_COST'].min()), 2),
+        "max_predicted_cost": round(float(result['PREDICTED_COST'].max()), 2)
+    })
 $$;
 
 -- ============================================================================
--- Procedure 2: DETECT_HIGH_RISK_CLAIMS
--- Purpose: Identifies claims with elevated risk of high costs or disputes
+-- Procedure 2: High-Risk Claims Detection Wrapper
 -- ============================================================================
+
+-- Drop if exists
+DROP FUNCTION IF EXISTS DETECT_HIGH_RISK_CLAIMS(STRING);
+
 CREATE OR REPLACE PROCEDURE DETECT_HIGH_RISK_CLAIMS(
-    CLAIM_STATUS_FILTER VARCHAR
+    CLAIM_STATUS_FILTER STRING
 )
-RETURNS VARCHAR
-LANGUAGE SQL
+RETURNS STRING
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.10'
+PACKAGES = ('snowflake-ml-python', 'scikit-learn')
+HANDLER = 'detect_high_risk'
+COMMENT = 'Calls HIGH_RISK_CLAIMS_DETECTOR model from Model Registry to identify high-risk claims'
 AS
 $$
-DECLARE
-    result_json VARCHAR;
-BEGIN
-    -- Identify high-risk claims based on ML model or risk factors
-    -- Returns claims that should be flagged for additional review
+def detect_high_risk(session, claim_status_filter):
+    from snowflake.ml.registry import Registry
+    import json
     
-    SELECT OBJECT_CONSTRUCT(
-        'status', 'success',
-        'claim_status_filter', :CLAIM_STATUS_FILTER,
-        'message', 'High-risk claims identified using risk scoring model',
-        'high_risk_count', (
-            SELECT COUNT(*)
-            FROM MAHONEY_GROUP_INTELLIGENCE.RAW.CLAIMS
-            WHERE (:CLAIM_STATUS_FILTER = '' OR claim_status = :CLAIM_STATUS_FILTER)
-              AND (
-                  claim_amount_incurred > 75000
-                  OR litigation_involved = TRUE
-                  OR severity = 'CATASTROPHIC'
-              )
-        ),
-        'high_risk_percentage', (
-            SELECT (COUNT(CASE WHEN claim_amount_incurred > 75000 
-                            OR litigation_involved = TRUE 
-                            OR severity = 'CATASTROPHIC' THEN 1 END)::FLOAT 
-                    / NULLIF(COUNT(*), 0) * 100)::NUMBER(5,2)
-            FROM MAHONEY_GROUP_INTELLIGENCE.RAW.CLAIMS
-            WHERE (:CLAIM_STATUS_FILTER = '' OR claim_status = :CLAIM_STATUS_FILTER)
-        ),
-        'recommendation', 'Claims flagged as high-risk should receive enhanced adjuster review and management oversight'
-    )::VARCHAR
-    INTO result_json;
+    # Get model
+    reg = Registry(session=session, database_name="MAHONEY_GROUP_INTELLIGENCE", schema_name="ANALYTICS")
+    model = reg.get_model("HIGH_RISK_CLAIMS_DETECTOR").default
     
-    RETURN result_json;
-END;
+    # Build query
+    status_filter = f"AND c.claim_status = '{claim_status_filter}'" if claim_status_filter else "AND c.claim_status IN ('OPEN', 'DISPUTED')"
+    
+    query = f"""
+    SELECT
+        c.claim_type,
+        c.claim_category,
+        c.severity,
+        cl.industry_vertical,
+        DATEDIFF('day', c.incident_date, c.report_date)::FLOAT AS days_to_report,
+        c.litigation_involved::BOOLEAN AS has_litigation,
+        COALESCE(cl.total_claim_history, 0)::FLOAT AS prior_claims,
+        CASE WHEN c.claim_amount_paid > 0 
+             THEN (c.claim_amount_incurred / NULLIF(c.claim_amount_paid, 0))::FLOAT 
+             ELSE 0.0 END AS incurred_paid_ratio,
+        prod.product_category,
+        prod.coverage_type,
+        FALSE::BOOLEAN AS is_high_risk
+    FROM RAW.CLAIMS c
+    JOIN RAW.CLIENTS cl ON c.client_id = cl.client_id
+    JOIN RAW.POLICIES p ON c.policy_id = p.policy_id
+    JOIN RAW.INSURANCE_PRODUCTS prod ON p.product_id = prod.product_id
+    WHERE 1=1 {status_filter}
+    LIMIT 100
+    """
+    
+    input_df = session.sql(query)
+    
+    # Get predictions
+    predictions = model.run(input_df, function_name="predict")
+    
+    # Count high-risk claims
+    result = predictions.select("HIGH_RISK_PREDICTION").to_pandas()
+    high_risk_count = int(result['HIGH_RISK_PREDICTION'].sum())
+    total_count = len(result)
+    
+    return json.dumps({
+        "claim_status_filter": claim_status_filter or "OPEN,DISPUTED",
+        "total_claims_analyzed": total_count,
+        "high_risk_count": high_risk_count,
+        "high_risk_rate_pct": round(high_risk_count / total_count * 100, 2) if total_count > 0 else 0,
+        "recommendation": f"Flag {high_risk_count} claims for enhanced review and management oversight" if high_risk_count > 0 else "No high-risk claims identified"
+    })
 $$;
 
 -- ============================================================================
--- Procedure 3: PREDICT_RENEWAL_LIKELIHOOD
--- Purpose: Predicts likelihood of policy renewal based on client factors
+-- Procedure 3: Renewal Likelihood Prediction Wrapper
 -- ============================================================================
+
+-- Drop if exists
+DROP FUNCTION IF EXISTS PREDICT_RENEWAL_LIKELIHOOD(STRING, STRING);
+
 CREATE OR REPLACE PROCEDURE PREDICT_RENEWAL_LIKELIHOOD(
-    INDUSTRY_FILTER VARCHAR,
-    BUSINESS_SEGMENT_FILTER VARCHAR
+    INDUSTRY_FILTER STRING,
+    BUSINESS_SEGMENT_FILTER STRING
 )
-RETURNS VARCHAR
-LANGUAGE SQL
+RETURNS STRING
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.10'
+PACKAGES = ('snowflake-ml-python', 'scikit-learn')
+HANDLER = 'predict_renewal'
+COMMENT = 'Calls RENEWAL_PREDICTOR model to predict policy renewal likelihood'
 AS
 $$
-DECLARE
-    result_json VARCHAR;
-BEGIN
-    -- Predict renewal likelihood using ML model
-    -- Factors: loss ratio, satisfaction, claim frequency, premium changes
+def predict_renewal(session, industry_filter, business_segment_filter):
+    from snowflake.ml.registry import Registry
+    import json
     
-    SELECT OBJECT_CONSTRUCT(
-        'status', 'success',
-        'industry_filter', :INDUSTRY_FILTER,
-        'business_segment_filter', :BUSINESS_SEGMENT_FILTER,
-        'message', 'Renewal likelihood model predictions completed',
-        'avg_renewal_rate', (
-            SELECT (SUM(CASE WHEN r.renewal_status = 'RENEWED' THEN 1 ELSE 0 END)::FLOAT 
-                    / NULLIF(COUNT(*), 0) * 100)::NUMBER(5,2)
-            FROM MAHONEY_GROUP_INTELLIGENCE.RAW.POLICY_RENEWALS r
-            JOIN MAHONEY_GROUP_INTELLIGENCE.RAW.CLIENTS c ON r.client_id = c.client_id
-            WHERE (:INDUSTRY_FILTER = '' OR c.industry_vertical = :INDUSTRY_FILTER)
-              AND (:BUSINESS_SEGMENT_FILTER = '' OR c.business_segment = :BUSINESS_SEGMENT_FILTER)
-        ),
-        'at_risk_clients', (
-            SELECT COUNT(DISTINCT c.client_id)
-            FROM MAHONEY_GROUP_INTELLIGENCE.RAW.CLIENTS c
-            LEFT JOIN MAHONEY_GROUP_INTELLIGENCE.RAW.CLAIMS cl ON c.client_id = cl.client_id
-            WHERE (:INDUSTRY_FILTER = '' OR c.industry_vertical = :INDUSTRY_FILTER)
-              AND (:BUSINESS_SEGMENT_FILTER = '' OR c.business_segment = :BUSINESS_SEGMENT_FILTER)
-              AND (c.client_satisfaction_score < 4.0 OR c.total_claim_history > 20)
-        ),
-        'recommendation', 'Clients with low satisfaction or high claim frequency should receive proactive retention outreach'
-    )::VARCHAR
-    INTO result_json;
+    # Get model
+    reg = Registry(session=session, database_name="MAHONEY_GROUP_INTELLIGENCE", schema_name="ANALYTICS")
+    model = reg.get_model("RENEWAL_PREDICTOR").default
     
-    RETURN result_json;
-END;
+    # Build query
+    industry = f"AND c.industry_vertical = '{industry_filter}'" if industry_filter else ""
+    segment = f"AND c.business_segment = '{business_segment_filter}'" if business_segment_filter else ""
+    
+    query = f"""
+    SELECT
+        prod.product_category,
+        prod.coverage_type,
+        c.industry_vertical,
+        c.business_segment,
+        c.client_tenure_years::FLOAT AS client_tenure,
+        c.client_satisfaction_score::FLOAT AS satisfaction_score,
+        COALESCE(c.total_claim_history, 0)::FLOAT AS claim_count,
+        p.annual_premium::FLOAT AS annual_premium,
+        DATEDIFF('day', p.effective_date, p.expiration_date)::FLOAT AS policy_duration,
+        p.policy_type,
+        FALSE::BOOLEAN AS renewed
+    FROM RAW.POLICIES p
+    JOIN RAW.CLIENTS c ON p.client_id = c.client_id
+    JOIN RAW.INSURANCE_PRODUCTS prod ON p.product_id = prod.product_id
+    WHERE p.policy_status = 'ACTIVE'
+      AND DATEDIFF('day', CURRENT_DATE(), p.expiration_date) BETWEEN 0 AND 90 {industry} {segment}
+    LIMIT 100
+    """
+    
+    input_df = session.sql(query)
+    
+    # Get predictions
+    predictions = model.run(input_df, function_name="predict")
+    
+    # Calculate statistics
+    result = predictions.select("RENEWAL_PREDICTION").to_pandas()
+    renewal_count = int(result['RENEWAL_PREDICTION'].sum())
+    total_count = len(result)
+    
+    return json.dumps({
+        "industry_filter": industry_filter or "ALL",
+        "business_segment_filter": business_segment_filter or "ALL",
+        "total_policies_analyzed": total_count,
+        "predicted_renewals": renewal_count,
+        "predicted_renewal_rate_pct": round(renewal_count / total_count * 100, 2) if total_count > 0 else 0,
+        "at_risk_count": total_count - renewal_count,
+        "recommendation": f"Proactive retention outreach for {total_count - renewal_count} at-risk policies" if (total_count - renewal_count) > 0 else "All policies have strong renewal likelihood"
+    })
 $$;
 
 -- ============================================================================
--- Display confirmation
+-- Test the wrapper procedures
 -- ============================================================================
+
 SELECT 'ML model wrapper procedures created successfully' AS status;
 
--- Show created procedures
-SHOW PROCEDURES IN SCHEMA ANALYTICS;
+-- Test each procedure (uncomment after models are registered via notebook)
+/*
+CALL PREDICT_CLAIM_COST('PROPERTY', 'MANUFACTURING');
+CALL DETECT_HIGH_RISK_CLAIMS('OPEN');
+CALL PREDICT_RENEWAL_LIKELIHOOD('HEALTHCARE', 'MIDMARKET');
+*/
 
-
+SELECT 'Execute notebook first to register models, then uncomment tests above' AS instruction;
