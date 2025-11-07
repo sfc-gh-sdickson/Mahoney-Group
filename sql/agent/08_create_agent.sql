@@ -80,27 +80,29 @@ CREATE OR REPLACE AGENT MAHONEY_GROUP_INTELLIGENCE_AGENT
       - question: "What is the average claim cost for settled claims?"
         answer: "I'll calculate the average cost for all settled claims."
       
-      # Complex Questions (10)
+      # Complex Questions (5)
       - question: "Analyze loss ratios by insurance product category. Show total premium, total claims incurred, loss ratio percentage, and profitability for each product line. Which products are most profitable?"
         answer: "I'll analyze loss ratios across product categories with premium and claims data to identify the most profitable products."
       - question: "What is Mahoney Group's competitive win rate? Show total competitive wins by previous carrier (Travelers, Hartford, Zurich, Liberty Mutual, AIG, Chubb, CNA), premium captured from each competitor, and which industries we're winning in."
         answer: "I'll analyze competitive wins by carrier and industry, showing win rates and premium captured."
-      - question: "Analyze agent performance metrics. Show total premium written, number of clients, average policy size, renewal rate, client satisfaction score, and competitive wins by agent. Rank agents by total production."
-        answer: "I'll create a comprehensive agent performance dashboard with all productivity metrics ranked by production."
-      - question: "Identify high-risk clients requiring intervention. Show clients with loss ratio >80%, claim frequency above industry average, risk rating of C+ or below, and client satisfaction <4.0. Calculate potential premium impact of risk reduction."
-        answer: "I'll identify at-risk clients using multiple risk factors and calculate the premium exposure."
       - question: "Analyze claim costs by industry vertical and claim type. Show average incurred cost, total claims, claim frequency rate (claims per policy), and litigation percentage for each combination. Identify highest-cost segments."
         answer: "I'll create a cross-tabulation of claim costs by industry and type, identifying the most expensive segments."
       - question: "Analyze policy renewal performance. Show renewal rate by business segment and industry, average premium change at renewal, and identify clients at risk of non-renewal based on loss ratio, premium increases >20%, and satisfaction scores. Estimate premium at risk."
         answer: "I'll analyze renewal rates and identify at-risk clients with premium exposure calculations."
-      - question: "Analyze claims adjuster performance. Show average days to settle, average claim cost, claims handled per month, client satisfaction rating, and percentage of claims with disputes by adjuster type. Which adjuster types are most efficient?"
-        answer: "I'll create an adjuster efficiency analysis comparing performance metrics across adjuster types."
-      - question: "Analyze performance by state. Show total premium, policy count, average premium per policy, loss ratio, competitive win rate, and market penetration by state. Identify expansion opportunities in states with low penetration but favorable loss ratios."
-        answer: "I'll analyze geographic market performance to identify growth opportunities."
       - question: "Analyze employee benefits program performance. Show total covered employees, premium per employee, plan enrollment by type (HEALTH, DENTAL, VISION, LIFE), carrier performance, and clients with comprehensive vs. limited benefits. Calculate average benefits spend per employee by industry."
         answer: "I'll analyze benefits program metrics including per-employee costs and plan mix by industry."
-      - question: "Analyze claim dispute and litigation trends. Show dispute rate by claim type and industry, average legal costs, average settlement amounts, resolution methods (mediation, arbitration, litigation), resolution times, and outcomes. Which disputes are most costly?"
-        answer: "I'll analyze litigation trends including costs, resolution methods, and outcomes to identify the most expensive dispute types."
+      
+      # ML Model Questions (5)
+      - question: "Predict claim costs for open property damage claims in construction"
+        answer: "I'll use the claim cost prediction model to forecast expenses for these claims."
+      - question: "Which open claims have high risk and should be flagged for enhanced review?"
+        answer: "I'll run the high-risk detection model to identify claims needing additional management oversight."
+      - question: "Predict renewal likelihood for healthcare clients in the midmarket segment"
+        answer: "I'll use the renewal prediction model to forecast retention rates for this segment."
+      - question: "What are the predicted costs for open bodily injury claims across all industries?"
+        answer: "I'll run the claim cost predictor to estimate total incurred costs for these claims."
+      - question: "Identify at-risk policies expiring in the next 90 days and predict which ones will not renew"
+        answer: "I'll use the renewal likelihood model to identify policies at risk of non-renewal and calculate premium exposure."
 
   tools:
     # ========================================================================
