@@ -178,7 +178,7 @@ def predict_renewal(session, industry_filter, business_segment_filter):
     
     # Get model
     reg = Registry(session=session, database_name="MAHONEY_GROUP_INTELLIGENCE", schema_name="ANALYTICS")
-    model = reg.get_model("RENEWAL_PREDICTOR").default
+    model = reg.get_model("RENEWAL_LIKELIHOOD_PREDICTOR").default
     
     # Build query
     industry = f"AND c.industry_vertical = '{industry_filter}'" if industry_filter else ""
